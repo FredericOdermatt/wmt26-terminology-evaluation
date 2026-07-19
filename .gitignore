@@ -1,0 +1,14 @@
+# Private gold data must never enter git history (repo goes public post-deadline)
+data/original/private/
+data/unified/private/
+
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+.DS_Store
+*.egg-info/
+data/original/public/*.zip
+reports/
