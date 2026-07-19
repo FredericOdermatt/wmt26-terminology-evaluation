@@ -1,6 +1,5 @@
 # Private gold data must never enter git history (repo goes public post-deadline)
 data/original/private/
-data/unified/private/
 
 .venv/
 __pycache__/
