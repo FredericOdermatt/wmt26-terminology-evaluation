@@ -2078,12 +2078,12 @@
                 {
                   "source": "vía",
                   "target": "trenbide",
-                  "target_inflected": null
+                  "target_inflected": "trenbide"
                 },
                 {
                   "source": "ferrocarril",
                   "target": "tren",
-                  "target_inflected": "<term src=\"vía\" tgt=\"trenbide\"> trenbide"
+                  "target_inflected": "trenbide"
                 }
               ]
             },
@@ -4385,22 +4385,22 @@
                 {
                   "source": "desvío",
                   "target": "orratz-aldaketa",
-                  "target_inflected": null
+                  "target_inflected": "Orratz-aldaketa"
                 },
                 {
                   "source": "cambio de aguja",
                   "target": "orratz-aldaketa",
-                  "target_inflected": "<term src=\"desvío\" tgt=\"orratz-aldaketa\"> Orratz-aldaketa"
+                  "target_inflected": "Orratz-aldaketa"
                 },
                 {
                   "source": "vía",
                   "target": "trenbide",
-                  "target_inflected": null
+                  "target_inflected": "trenbide"
                 },
                 {
                   "source": "tren",
                   "target": "tren",
-                  "target_inflected": "<term src=\"vía\" tgt=\"trenbide\"> trenbide"
+                  "target_inflected": "trenbide"
                 },
                 {
                   "source": "vía",
@@ -9092,12 +9092,12 @@
                 {
                   "source": "vía",
                   "target": "trenbide",
-                  "target_inflected": null
+                  "target_inflected": "trenbideetan"
                 },
                 {
                   "source": "ferrocarril",
                   "target": "tren",
-                  "target_inflected": "<term src=\"vía\" tgt=\"trenbide\"> trenbideetan"
+                  "target_inflected": "trenbideetan"
                 }
               ]
             },
@@ -9592,6 +9592,11 @@
                   "target_inflected": "tren"
                 },
                 {
+                  "source": "cremallera",
+                  "target": "kremailera- tren ",
+                  "target_inflected": "Kremailera- tren ak"
+                },
+                {
                   "source": "tren",
                   "target": "tren",
                   "target_inflected": "tren"
@@ -9599,6 +9604,11 @@
                 {
                   "source": "tren",
                   "target": "tren",
+                  "target_inflected": null
+                },
+                {
+                  "source": "cremallera",
+                  "target": "kremailera- tren ",
                   "target_inflected": null
                 }
               ]
@@ -9755,7 +9765,7 @@
                 {
                   "source": "vía",
                   "target": "trenbide",
-                  "target_inflected": null
+                  "target_inflected": "Trenbidea"
                 },
                 {
                   "source": "vía",
@@ -9765,7 +9775,7 @@
                 {
                   "source": "tren",
                   "target": "tren",
-                  "target_inflected": "<term src=\"vía\" tgt=\"trenbide\"> Trenbidea"
+                  "target_inflected": "Trenbidea"
                 }
               ]
             }
@@ -9840,7 +9850,7 @@
                 {
                   "source": "vía",
                   "target": "trenbide",
-                  "target_inflected": null
+                  "target_inflected": "Trenbidea"
                 },
                 {
                   "source": "vía",
@@ -9850,7 +9860,7 @@
                 {
                   "source": "tren",
                   "target": "tren",
-                  "target_inflected": "<term src=\"vía\" tgt=\"trenbide\"> Trenbidea"
+                  "target_inflected": "Trenbidea"
                 },
                 {
                   "source": "vía",
@@ -9926,12 +9936,12 @@
                 {
                   "source": "ancho de vía",
                   "target": "trenbide-zabalera",
-                  "target_inflected": "<term src=\"tren\" tgt=\"tren\"> Trenbide"
+                  "target_inflected": "Trenbide-zabalera"
                 },
                 {
                   "source": "tren",
                   "target": "tren",
-                  "target_inflected": null
+                  "target_inflected": "Trenbide"
                 }
               ]
             }
@@ -16589,12 +16599,12 @@
                 {
                   "source": "metro",
                   "target": "metro",
-                  "target_inflected": null
+                  "target_inflected": "metro"
                 },
                 {
                   "source": "ferrocarril subterráneo",
                   "target": "metro",
-                  "target_inflected": "<term src=\"metro\" tgt=\"metro\"> metro"
+                  "target_inflected": "metro"
                 }
               ]
             }
@@ -17748,7 +17758,7 @@
                 {
                   "source": "consolidación",
                   "target": "taldekatze",
-                  "target_inflected": "<term src=\"grupaje\" tgt=\"taldekatze\"> taldekatzea"
+                  "target_inflected": "taldekatzea"
                 },
                 {
                   "source": "mercancía",
@@ -17758,7 +17768,7 @@
                 {
                   "source": "grupaje",
                   "target": "taldekatze",
-                  "target_inflected": null
+                  "target_inflected": "taldekatzea"
                 }
               ]
             }
@@ -21608,12 +21618,12 @@
                 {
                   "source": "vía",
                   "target": "trenbide",
-                  "target_inflected": null
+                  "target_inflected": "trenbide"
                 },
                 {
                   "source": "tren",
                   "target": "tren",
-                  "target_inflected": "<term src=\"vía\" tgt=\"trenbide\"> trenbide"
+                  "target_inflected": "trenbide"
                 }
               ]
             }
@@ -29756,12 +29766,12 @@
                 {
                   "source": "ATP",
                   "target": "ATP",
-                  "target_inflected": "ATP trena sistema gisa ; landa-elementuez ( <term src=\"eje\" tgt=\"ardatz\"> ardatz"
+                  "target_inflected": null
                 },
                 {
                   "source": "eje",
                   "target": "ardatz",
-                  "target_inflected": null
+                  "target_inflected": "ardatz"
                 },
                 {
                   "source": "aguja",
@@ -32281,7 +32291,7 @@
                 {
                   "source": "alabeo de la vía",
                   "target": "trenbidearen kopadura",
-                  "target_inflected": "<term src=\"vía férrea\" tgt=\"trenbide\"> trenbidearen"
+                  "target_inflected": "trenbidearen kopadura"
                 },
                 {
                   "source": "carril",
@@ -32934,12 +32944,12 @@
                 {
                   "source": "transbordador ferroviario",
                   "target": "trenbide-transbordadore",
-                  "target_inflected": "<term src=\"ferrobarco\" tgt=\"trenbide-transbordadore\"> Trenbide-transbordadore"
+                  "target_inflected": "Trenbide-transbordadore"
                 },
                 {
                   "source": "ferrobarco",
                   "target": "trenbide-transbordadore",
-                  "target_inflected": null
+                  "target_inflected": "Trenbide-transbordadore"
                 },
                 {
                   "source": "vehículo",
@@ -36512,7 +36522,7 @@
                 {
                   "source": "vía",
                   "target": "trenbide",
-                  "target_inflected": null
+                  "target_inflected": "trenbidearen"
                 },
                 {
                   "source": "vía",
@@ -36522,7 +36532,7 @@
                 {
                   "source": "tren",
                   "target": "tren",
-                  "target_inflected": "<term src=\"vía\" tgt=\"trenbide\"> trenbidearen"
+                  "target_inflected": "trenbidearen"
                 }
               ]
             }
@@ -37324,7 +37334,7 @@
                 {
                   "source": "vía",
                   "target": "trenbide",
-                  "target_inflected": null
+                  "target_inflected": "trenbide"
                 },
                 {
                   "source": "vía",
@@ -41610,12 +41620,12 @@
                 {
                   "source": "línea aérea de contacto",
                   "target": "katenaria",
-                  "target_inflected": "<term src=\"catenaria\" tgt=\"katenaria\"> katenaria"
+                  "target_inflected": "katenaria"
                 },
                 {
                   "source": "catenaria",
                   "target": "katenaria",
-                  "target_inflected": null
+                  "target_inflected": "katenaria"
                 },
                 {
                   "source": "tren",

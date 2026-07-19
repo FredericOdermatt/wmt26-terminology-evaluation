@@ -16414,12 +16414,12 @@
                 {
                   "source": "elevalunas",
                   "target": "beira-jasogailu",
-                  "target_inflected": "beira-jasogailu motorizatuak 1940ko udazkenean agertu ziren , orduan instalatu baitzituen Packard enpresa estatubatuarrak beira-jasogailu elektro-hidraulikoak Packard Custom Super Eight serieko bere <term src=\"coche\" tgt=\"auto\"> auto"
+                  "target_inflected": null
                 },
                 {
                   "source": "coche",
                   "target": "auto",
-                  "target_inflected": null
+                  "target_inflected": "auto"
                 }
               ]
             },
