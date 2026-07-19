@@ -33,8 +33,10 @@ predicate recalls only 21–37% of the annotations, confirming the mining used r
 
 Polish inflects terms heavily: the annotated base form appears verbatim in the reference for only
 34–41% of laniqo term occurrences (`wiper` → *wycieraczka*, reference says *wycieraczce*). Basque
-agglutinates suffixes but keeps the stem as a prefix, so base forms match 98–100% as substrings —
-but 51–74% of Basque occurrences still differ from the base form (*garraio* → *garraioaren*).
+agglutinates suffixes but keeps the stem as a prefix, so base forms match 98–100% as raw
+substrings — but only 44–54% once matching is anchored to word boundaries (*garraio* does not
+boundary-match inside *garraioaren*). The attested surface forms, not the base forms, carry
+Basque scoring.
 
 The unified data mitigates this with `TermPair.target_inflected`, the gold surface form attested
 in the reference (laniqo: from the CSV inflection column, 80–92% coverage; vicomtech: the covered
@@ -70,13 +72,24 @@ with the provider.
 
 ### 5. Data noise and the compliance ceiling
 
-Even gold references do not reach 100% under surface matching. The oracle check yields:
+Even gold references do not reach 100% under surface matching. The oracle check yields
+(word-boundary-anchored; *overlap* allows span reuse, *exclusive* is the maximal disjoint
+matching):
 
-| set | base | attested | union |
-|---|---|---|---|
-| enpl mech-eng t1 | 69.0% | 79.8% | 95.8% |
-| enpl medical t1 | 51.1% | 83.7% | 89.6% |
-| eseu (all 4) | 98–100% | 97–99% | 100% |
+| set | base | attested | overlap | exclusive |
+|---|---|---|---|---|
+| enpl mech-eng t1 | 66.6% | 79.8% | 95.5% | 86.4% |
+| enpl mech-eng t2 | 62.0% | 79.7% | 92.0% | 83.7% |
+| enpl medical t1 | 45.5% | 83.7% | 88.9% | 86.0% |
+| enpl medical t2 | 53.0% | 92.5% | 96.0% | 93.8% |
+| eseu (all 4) | 44–54% | 97–99% | 98–100% | 97–99% |
+
+The overlap-vs-exclusive gap on gold references (up to 9 points for enpl, under 1 point for eseu)
+exposes a sixth effect: **repeated mentions**. A term annotated in several sentences of the same
+paragraph demands that many disjoint renditions under exclusive matching, but a fluent reference
+often pronominalizes repeat mentions, so the reference itself contains fewer renditions than
+annotations. Whether the metric should require one rendition per annotated occurrence or one per
+term type per paragraph is a policy choice; the oracle gap quantifies its impact.
 
 The enpl gap splits into three causes (245 cases, listed in `reports/laniqo-term-mismatch-cases.csv`):
 181 occurrences lack an attested-inflection annotation and inflect in the reference (recoverable
@@ -98,8 +111,9 @@ The evaluation uses maximal exclusive matching (the `match_accuracy` constructio
   disjoint renditions.
 - Any listed target alternative counts (competitors received the alternatives).
 - The score for a paragraph is the *maximum* number of simultaneously satisfiable term
-  occurrences over all span assignments — computed with per-occurrence binary masks, testing
-  combinations from all-terms downward. Greedy assignment is a lower bound and is not used.
+  occurrences over all span assignments — computed exactly over per-occurrence binary masks with
+  branch-and-bound (the same quantity as match_accuracy's exhaustive search). Greedy assignment
+  is a lower bound and is not used.
 
 For diagnostics we additionally report the *overlap-allowed* variant (each term checked
 independently, spans may overlap). It is a strict upper bound of the exclusive score; the gap
