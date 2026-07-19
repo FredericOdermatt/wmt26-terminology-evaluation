@@ -2,6 +2,8 @@ from typing import Literal
 
 from pydantic import BaseModel, model_validator
 
+Alignment = Literal["exact", "fuzzy", "unaligned"]
+
 Provider = Literal["laniqo", "vicomtech", "hkma"]
 LanguagePair = Literal["enpl", "eseu", "zhen"]
 
@@ -32,15 +34,15 @@ class Segment(BaseModel):
 
 
 class Paragraph(BaseModel):
+    """`alignment`/`seg_span` are set by converters that recover the paragraph
+    from a provider-side segment stream (vicomtech): the released paragraph text
+    was hand-edited after extraction, so provenance is recorded per paragraph."""
+
     source: str
     reference: str | None = None
     segments: list[Segment] = []
-
-    @model_validator(mode="after")
-    def _segments_compose_source(self) -> "Paragraph":
-        if self.segments and " ".join(s.source for s in self.segments) != self.source:
-            raise ValueError("segment sources must join to the paragraph source")
-        return self
+    alignment: Alignment | None = None
+    seg_span: tuple[int, int] | None = None
 
 
 class Document(BaseModel):
