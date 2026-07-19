@@ -59,7 +59,7 @@ def _format_row(r: EvaluationResult) -> str:
     terms = "-"
     if r.terms:
         t = r.terms
-        terms = f"{t.base_rate:6.1%} {t.attested_rate:9.1%} {t.overlap_rate:8.1%} {t.exclusive_rate:8.1%} n={t.occurrences}"
+        terms = f"{t.base_match:6.1%} {t.inflection_match:9.1%} {t.base_or_inflection_match:8.1%} {t.exclusive_match:8.1%} n={t.occurrences}"
     test_set = f"{r.pair} t{r.track} {r.domain}"
     return f"{test_set:<33} {r.system:<10} {r.mode:<8} {r.document_chrf:6.2f} {r.paragraph_chrf:6.2f}  {terms}"
 
@@ -76,7 +76,7 @@ def main() -> None:
 
     print(
         f"{'set':<33} {'system':<10} {'mode':<8} {'docCF':>6} {'parCF':>6}  "
-        f"{'base':>6} {'attested':>9} {'overlap':>8} {'exclusiv':>8}"
+        f"{'base':>6} {'inflectn':>9} {'either':>8} {'exclusiv':>8}"
     )
     results = []
     for test_set in load_test_sets():

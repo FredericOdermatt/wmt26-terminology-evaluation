@@ -7,15 +7,15 @@ from wmt26_terminology.schema import TestSet
 
 class TermScores(BaseModel):
     """Rates over annotated term occurrences, matched word-boundary-anchored in
-    the expected paragraph. `overlap_rate` allows span reuse across occurrences;
-    `exclusive_rate` requires pairwise disjoint spans (maximal matching) and is
+    the expected paragraph. `base_or_inflection_match` allows span reuse across occurrences;
+    `exclusive_match` requires pairwise disjoint spans (maximal matching) and is
     the primary score."""
 
     occurrences: int
-    base_rate: float
-    attested_rate: float
-    overlap_rate: float
-    exclusive_rate: float
+    base_match: float
+    inflection_match: float
+    base_or_inflection_match: float
+    exclusive_match: float
 
 
 def _glossary_alternatives(test_set: TestSet) -> dict[str, list[str]]:
@@ -47,8 +47,8 @@ def term_success(test_set: TestSet, submission: Submission) -> TermScores | None
         return None
     return TermScores(
         occurrences=occurrences,
-        base_rate=base / occurrences,
-        attested_rate=attested / occurrences,
-        overlap_rate=overlap / occurrences,
-        exclusive_rate=exclusive / occurrences,
+        base_match=base / occurrences,
+        inflection_match=attested / occurrences,
+        base_or_inflection_match=overlap / occurrences,
+        exclusive_match=exclusive / occurrences,
     )
