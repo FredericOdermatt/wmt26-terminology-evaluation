@@ -114,19 +114,9 @@ def _reference_for(paragraph: str, es_clean: list[str], eu_clean: dict[int, str]
     return _detok(eu_joined)
 
 
-def _convert_domain(domain: str, track: int, original_root: Path) -> TestSet:
-    stem = domain.replace("-", "_")
-    seg_dir = original_root / "private" / "gold-data" / "sentence-level" / "vicomtech" / domain
-    es_by_id = _read_segs(seg_dir / f"{stem}.es2eu_annotated.es")
-    assert sorted(es_by_id) == list(range(len(es_by_id))), f"{domain}: es seg ids not contiguous"
-    es_segs = [es_by_id[i] for i in range(len(es_by_id))]
-    # The eu side may have gaps (railways is missing seg 1741, an untranslated heading).
-    eu_clean = {i: _clean(s) for i, s in _read_segs(seg_dir / f"{stem}.es2eu_annotated.eu").items()}
-    es_clean = [_clean(s) for s in es_segs]
-    released_docs = json.loads(
-        (original_root / "public" / f"track{track}" / f"text.{domain}.eseu.json").read_text(encoding="utf-8")
-    )
-
+def _build_documents(
+    domain: str, released_docs: list[str], es_segs: list[str], es_clean: list[str], eu_clean: dict[int, str]
+) -> list[Document]:
     aligner = _Aligner(es_segs)
     documents = []
     counts = {"exact": 0, "fuzzy": 0, "unaligned": 0}
@@ -152,28 +142,35 @@ def _convert_domain(domain: str, track: int, original_root: Path) -> TestSet:
             )
         documents.append(Document(document_id=f"{domain}-doc{doc_index:02d}", paragraphs=paragraphs))
 
-    total = sum(counts.values())
-    aligned_fraction = (counts["exact"] + counts["fuzzy"]) / total
+    aligned_fraction = (counts["exact"] + counts["fuzzy"]) / sum(counts.values())
     print(f"vicomtech {domain}: {counts['exact']} exact, {counts['fuzzy']} fuzzy, {counts['unaligned']} unaligned paragraphs")
     assert aligned_fraction >= _MIN_ALIGNED_FRACTION, f"{domain}: only {aligned_fraction:.1%} of paragraphs aligned"
+    return documents
 
-    glossary = None
-    samples = None
-    if track == 1:
-        released_terms = json.loads(
-            (original_root / "public" / "track1" / f"terms.{domain}.eseu.json").read_text(encoding="utf-8")
-        )
-        glossary = Glossary(
-            proper=[TermEntry(source=src, targets=tgts) for src, tgts in released_terms["proper"].items()],
-            random=[TermEntry(source=src, targets=tgts) for src, tgts in released_terms["random"].items()],
-        )
-    else:
-        samples = [
-            BitextSample(source=s["es"], target=s["eu"])
-            for s in json.loads(
-                (original_root / "public" / "track2" / f"sample.{domain}.eseu.json").read_text(encoding="utf-8")
-            )
-        ]
+
+def _load_glossary(path: Path) -> Glossary:
+    released_terms = json.loads(path.read_text(encoding="utf-8"))
+    return Glossary(
+        proper=[TermEntry(source=src, targets=tgts) for src, tgts in released_terms["proper"].items()],
+        random=[TermEntry(source=src, targets=tgts) for src, tgts in released_terms["random"].items()],
+    )
+
+
+def _load_samples(path: Path) -> list[BitextSample]:
+    return [BitextSample(source=s["es"], target=s["eu"]) for s in json.loads(path.read_text(encoding="utf-8"))]
+
+
+def _convert_domain(domain: str, track: int, original_root: Path) -> TestSet:
+    stem = domain.replace("-", "_")
+    seg_dir = original_root / "private" / "gold-data" / "sentence-level" / "vicomtech" / domain
+    public = original_root / "public" / f"track{track}"
+    es_by_id = _read_segs(seg_dir / f"{stem}.es2eu_annotated.es")
+    assert sorted(es_by_id) == list(range(len(es_by_id))), f"{domain}: es seg ids not contiguous"
+    es_segs = [es_by_id[i] for i in range(len(es_by_id))]
+    # The eu side may have gaps (railways is missing seg 1741, an untranslated heading).
+    eu_clean = {i: _clean(s) for i, s in _read_segs(seg_dir / f"{stem}.es2eu_annotated.eu").items()}
+    released_docs = json.loads((public / f"text.{domain}.eseu.json").read_text(encoding="utf-8"))
+    documents = _build_documents(domain, released_docs, es_segs, [_clean(s) for s in es_segs], eu_clean)
     return TestSet(
         provider="vicomtech",
         track=track,
@@ -183,8 +180,8 @@ def _convert_domain(domain: str, track: int, original_root: Path) -> TestSet:
         target_lang="eu",
         paragraph_delimiter="\n",
         documents=documents,
-        glossary=glossary,
-        samples=samples,
+        glossary=_load_glossary(public / f"terms.{domain}.eseu.json") if track == 1 else None,
+        samples=_load_samples(public / f"sample.{domain}.eseu.json") if track != 1 else None,
     )
 
 
