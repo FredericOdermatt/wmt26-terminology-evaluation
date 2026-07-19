@@ -9,8 +9,9 @@ LanguagePair = Literal["enpl", "eseu", "zhen"]
 
 
 class TermPair(BaseModel):
-    """`target_inflected` is the surface form attested in the reference (laniqo
-    annotates it per sentence); `target` is the base form."""
+    """`target` is the base/citation form as annotated by the provider;
+    `target_inflected` is the surface form attested in the reference (laniqo:
+    per-sentence CSV column; vicomtech: the eu-side term tag span)."""
 
     source: str
     target: str

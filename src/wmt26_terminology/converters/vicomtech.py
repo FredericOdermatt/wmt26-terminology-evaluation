@@ -2,13 +2,14 @@ import difflib
 import json
 import re
 from pathlib import Path
+from typing import NamedTuple
 
 from wmt26_terminology.schema import BitextSample, Document, Glossary, Paragraph, Segment, TermEntry, TermPair, TestSet
 
 _DOMAIN_TRACKS = {"energy": 1, "automotion": 1, "machine-tool": 2, "railways": 2}
 
 _SEG_RE = re.compile(r'<seg id="(\d+)">\s?(.*?)\s?</seg>')
-_TERM_RE = re.compile(r'<term src="([^"]*)" tgt="([^"]*)">')
+_TERM_RE = re.compile(r'<term src="([^"]*)" tgt="([^"]*)">\s?(.*?)\s?</term>')
 _CITATION_RE = re.compile(r"\[\s*\d+\s*\]")
 
 _FUZZY_THRESHOLD = 0.85
@@ -103,21 +104,39 @@ class _Aligner:
         return "unaligned", None
 
 
-def _reference_for(paragraph: str, es_clean: list[str], eu_clean: dict[int, str], span: tuple[int, int]) -> str:
+def _seg_term_pairs(es_seg: str, eu_seg: str | None) -> list[TermPair]:
+    """Both sides carry <term src tgt> tags whose covered text is the surface
+    form; the eu-side span is the attested inflected form of the target."""
+    eu_pool = _TERM_RE.findall(eu_seg or "")
+    pairs = []
+    for src, tgt, _surface in _TERM_RE.findall(es_seg):
+        matched = next((a for a in eu_pool if a[0] == src and a[1] == tgt), None)
+        if matched:
+            eu_pool.remove(matched)
+        pairs.append(TermPair(source=src, target=tgt, target_inflected=matched[2] if matched else None))
+    return pairs
+
+
+class _SegData(NamedTuple):
+    es_segs: list[str]
+    es_clean: list[str]
+    eu_raw: dict[int, str]
+    eu_clean: dict[int, str]
+
+
+def _reference_for(paragraph: str, segs: _SegData, span: tuple[int, int]) -> str:
     """Mirror onto the eu side whichever spacing transform reproduces the
     released es paragraph; the release mixes raw and detokenized spacing."""
     start, end = span
-    es_joined = " ".join(es_clean[start : end + 1])
-    eu_joined = " ".join(eu_clean[i] for i in range(start, end + 1) if i in eu_clean)
+    es_joined = " ".join(segs.es_clean[start : end + 1])
+    eu_joined = " ".join(segs.eu_clean[i] for i in range(start, end + 1) if i in segs.eu_clean)
     if es_joined == paragraph:
         return eu_joined
     return _detok(eu_joined)
 
 
-def _build_documents(
-    domain: str, released_docs: list[str], es_segs: list[str], es_clean: list[str], eu_clean: dict[int, str]
-) -> list[Document]:
-    aligner = _Aligner(es_segs)
+def _build_documents(domain: str, released_docs: list[str], segs: _SegData) -> list[Document]:
+    aligner = _Aligner(segs.es_segs)
     documents = []
     counts = {"exact": 0, "fuzzy": 0, "unaligned": 0}
     for doc_index, released_doc in enumerate(released_docs):
@@ -128,12 +147,12 @@ def _build_documents(
             segments = []
             reference = None
             if span is not None:
-                reference = _reference_for(para_text, es_clean, eu_clean, span)
+                reference = _reference_for(para_text, segs, span)
                 segments = [
                     Segment(
-                        source=es_clean[i],
-                        reference=eu_clean.get(i),
-                        terms=[TermPair(source=s, target=t) for s, t in _TERM_RE.findall(es_segs[i])],
+                        source=segs.es_clean[i],
+                        reference=segs.eu_clean.get(i),
+                        terms=_seg_term_pairs(segs.es_segs[i], segs.eu_raw.get(i)),
                     )
                     for i in range(span[0], span[1] + 1)
                 ]
@@ -168,9 +187,10 @@ def _convert_domain(domain: str, track: int, original_root: Path) -> TestSet:
     assert sorted(es_by_id) == list(range(len(es_by_id))), f"{domain}: es seg ids not contiguous"
     es_segs = [es_by_id[i] for i in range(len(es_by_id))]
     # The eu side may have gaps (railways is missing seg 1741, an untranslated heading).
-    eu_clean = {i: _clean(s) for i, s in _read_segs(seg_dir / f"{stem}.es2eu_annotated.eu").items()}
+    eu_raw = _read_segs(seg_dir / f"{stem}.es2eu_annotated.eu")
+    segs = _SegData(es_segs, [_clean(s) for s in es_segs], eu_raw, {i: _clean(s) for i, s in eu_raw.items()})
     released_docs = json.loads((public / f"text.{domain}.eseu.json").read_text(encoding="utf-8"))
-    documents = _build_documents(domain, released_docs, es_segs, [_clean(s) for s in es_segs], eu_clean)
+    documents = _build_documents(domain, released_docs, segs)
     return TestSet(
         provider="vicomtech",
         track=track,
