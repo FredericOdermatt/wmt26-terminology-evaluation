@@ -1,3 +1,4 @@
+import csv
 import json
 import re
 import unicodedata
@@ -7,6 +8,10 @@ from pathlib import Path
 from wmt26_terminology.schema import BitextSample, Document, Glossary, Paragraph, Segment, TermEntry, TermPair, TestSet
 
 _DOMAINS = {"ME": "mechanical-engineering", "medical": "medical"}
+_CSV_FILES = {
+    "ME": "WMT26_terminlogy_testset1 - ALL_documents_sentences.csv",
+    "medical": "WMT26_terminlogy_testset2 - ALL_documents_sentences.csv",
+}
 # Track split by position in first-appearance document order, mirroring the provider's build.py.
 _TRACK1_DOC_SLICES = {"ME": slice(7, None), "medical": slice(0, 6)}
 
@@ -39,6 +44,43 @@ def _load_rows(path: Path) -> list[dict]:
     return [row for row in rows if row["en"]]
 
 
+def _norm_ws(text: str) -> str:
+    return re.sub(r"\s+", " ", text or "").strip()
+
+
+def _split_terms(cell: str) -> list[str]:
+    return [term for term in (part.strip() for part in (cell or "").split(",")) if term]
+
+
+def _attach_inflections(rows: list[dict], csv_path: Path) -> None:
+    """Join the annotation CSV's 'term (PL - inflection)' column onto the rows
+    (same order, empty-EN rows dropped on both sides). The term columns are
+    comma-separated and not always parallel (two EN synonyms may share one PL
+    entry); non-parallel rows are skipped."""
+    csv_rows = [r for r in csv.DictReader(csv_path.open(newline="", encoding="utf-8")) if _norm_ws(r["source sentence (EN)"])]
+    if len(csv_rows) != len(rows):
+        return
+    for row, csv_row in zip(rows, csv_rows, strict=True):
+        if _norm_ws(csv_row["source sentence (EN)"]) != _norm_ws(row["en"]):
+            continue
+        en_terms = _split_terms(csv_row["term (EN)"])
+        inflected = _split_terms(csv_row["term (PL - inflection)"])
+        if en_terms and len(en_terms) == len(inflected):
+            row["inflections"] = {en.lower(): pl for en, pl in zip(en_terms, inflected, strict=True)}
+
+
+def _term_pairs(row: dict) -> list[TermPair]:
+    inflections = row.get("inflections") or {}
+    return [
+        TermPair(
+            source=t["en"].strip(),
+            target=t["pl"].strip(),
+            target_inflected=inflections.get(t["en"].strip().lower()),
+        )
+        for t in (row.get("proper_terms") or [])
+    ]
+
+
 def _doc_order(rows: list[dict]) -> list[str]:
     return list(OrderedDict.fromkeys(row["document_id"] for row in rows))
 
@@ -63,17 +105,7 @@ def _build_documents(rows: list[dict], doc_ids: set[str]) -> list[Document]:
                     Paragraph(
                         source=" ".join(r["en"] for r in para),
                         reference=" ".join(r["pl"] for r in para),
-                        segments=[
-                            Segment(
-                                source=r["en"],
-                                reference=r["pl"],
-                                terms=[
-                                    TermPair(source=t["en"].strip(), target=t["pl"].strip())
-                                    for t in (r.get("proper_terms") or [])
-                                ],
-                            )
-                            for r in para
-                        ],
+                        segments=[Segment(source=r["en"], reference=r["pl"], terms=_term_pairs(r)) for r in para],
                     )
                     for para in paragraphs
                 ],
@@ -94,10 +126,12 @@ def _load_glossary(public_terms_path: Path) -> Glossary:
 
 
 def convert(original_root: Path) -> list[TestSet]:
-    jsons_dir = original_root / "private" / "gold-data" / "doc-level" / "laniqo" / "jsons"
+    laniqo_dir = original_root / "private" / "gold-data"
+    jsons_dir = laniqo_dir / "doc-level" / "laniqo" / "jsons"
     test_sets = []
     for provider_domain, domain in _DOMAINS.items():
         rows = _load_rows(jsons_dir / f"WMT26_terminology_{provider_domain}.json")
+        _attach_inflections(rows, laniqo_dir / "sentence-level" / "laniqo" / _CSV_FILES[provider_domain])
         order = _doc_order(rows)
         track1_ids = set(order[_TRACK1_DOC_SLICES[provider_domain]])
 
@@ -119,14 +153,7 @@ def convert(original_root: Path) -> list[TestSet]:
                 paragraph_delimiter="\n\n",
                 documents=_build_documents(rows, track2_ids),
                 samples=[
-                    BitextSample(
-                        source=row["en"],
-                        target=row["pl"],
-                        document_id=row["document_id"],
-                        terms=[
-                            TermPair(source=t["en"].strip(), target=t["pl"].strip()) for t in (row.get("proper_terms") or [])
-                        ],
-                    )
+                    BitextSample(source=row["en"], target=row["pl"], document_id=row["document_id"], terms=_term_pairs(row))
                     for row in rows
                     if row["document_id"] in track2_ids and row["step"] == "extraction"
                 ],

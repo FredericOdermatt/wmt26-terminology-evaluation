@@ -9,8 +9,12 @@ LanguagePair = Literal["enpl", "eseu", "zhen"]
 
 
 class TermPair(BaseModel):
+    """`target_inflected` is the surface form attested in the reference (laniqo
+    annotates it per sentence); `target` is the base form."""
+
     source: str
     target: str
+    target_inflected: str | None = None
 
 
 class TermEntry(BaseModel):
