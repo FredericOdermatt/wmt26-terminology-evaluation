@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from wmt26_terminology.converters import laniqo
+from wmt26_terminology.converters import hkma, laniqo
 from wmt26_terminology.schema import TestSet
 
 ORIGINAL = Path("data/original")
@@ -23,7 +23,7 @@ def _assert_matches_release(ts: TestSet) -> None:
 
 def main() -> None:
     UNIFIED_PRIVATE.mkdir(parents=True, exist_ok=True)
-    for ts in laniqo.convert(ORIGINAL):
+    for ts in laniqo.convert(ORIGINAL) + hkma.convert(ORIGINAL):
         _assert_matches_release(ts)
         out = UNIFIED_PRIVATE / f"{ts.provider}.{ts.domain}.{ts.pair}.track{ts.track}.json"
         out.write_text(ts.model_dump_json(indent=2), encoding="utf-8")
