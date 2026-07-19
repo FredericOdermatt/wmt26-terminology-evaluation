@@ -8,7 +8,10 @@ convert-datasets:
 	$(UV) python -m wmt26_terminology.convert
 
 evaluate:
-	@echo "not implemented yet"
+	$(UV) python -m wmt26_terminology.evaluate --submissions $(SUBMISSIONS)
+
+evaluate-oracle:
+	$(UV) python -m wmt26_terminology.evaluate --oracle
 
 ruff:
 	$(UV) ruff check src --fix && $(UV) ruff format src
