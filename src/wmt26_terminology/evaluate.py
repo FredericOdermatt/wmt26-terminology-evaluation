@@ -58,7 +58,8 @@ def _results_for(test_set: TestSet, submissions_dir: Path | None) -> list[Evalua
 def _format_row(r: EvaluationResult) -> str:
     terms = "-"
     if r.terms:
-        terms = f"{r.terms.base_rate:6.1%} {r.terms.attested_rate:9.1%} {r.terms.surface_rate:8.1%} n={r.terms.occurrences}"
+        t = r.terms
+        terms = f"{t.base_rate:6.1%} {t.attested_rate:9.1%} {t.overlap_rate:8.1%} {t.exclusive_rate:8.1%} n={t.occurrences}"
     test_set = f"{r.pair} t{r.track} {r.domain}"
     return f"{test_set:<33} {r.system:<10} {r.mode:<8} {r.document_chrf:6.2f} {r.paragraph_chrf:6.2f}  {terms}"
 
@@ -73,7 +74,10 @@ def main() -> None:
     if args.oracle == (args.submissions is not None):
         parser.error("pass exactly one of --oracle or --submissions")
 
-    print(f"{'set':<33} {'system':<10} {'mode':<8} {'docCF':>6} {'parCF':>6}  {'base':>6} {'attested':>9} {'surface':>8}")
+    print(
+        f"{'set':<33} {'system':<10} {'mode':<8} {'docCF':>6} {'parCF':>6}  "
+        f"{'base':>6} {'attested':>9} {'overlap':>8} {'exclusiv':>8}"
+    )
     results = []
     for test_set in load_test_sets():
         if args.track and test_set.track != args.track:
