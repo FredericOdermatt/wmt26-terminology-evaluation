@@ -9,7 +9,7 @@ from wmt26_terminology.schema import BitextSample, Document, Glossary, Paragraph
 _DOMAIN_TRACKS = {"energy": 1, "automotion": 1, "machine-tool": 2, "railways": 2}
 
 _SEG_RE = re.compile(r'<seg id="(\d+)">\s?(.*?)\s?</seg>')
-_TERM_RE = re.compile(r'<term src="([^"]*)" tgt="([^"]*)">\s?(.*?)\s?</term>')
+_TERM_RE = re.compile(r'<term src="([^"]*)" tgt="([^"]*)">\s?([^<]*?)\s?</term>')
 _CITATION_RE = re.compile(r"\[\s*\d+\s*\]")
 
 _FUZZY_THRESHOLD = 0.85
@@ -104,12 +104,23 @@ class _Aligner:
         return "unaligned", None
 
 
+def _tag_annotations(seg: str) -> list[tuple[str, str, str]]:
+    """(src, tgt, covered surface) for every term tag. Tags can nest one level
+    on the eu side (an agglutinated word satisfying two terms), so innermost
+    tags are extracted first and replaced by their surface."""
+    annotations = []
+    while match := _TERM_RE.search(seg):
+        annotations.append((match.group(1), match.group(2), match.group(3)))
+        seg = seg[: match.start()] + match.group(3) + seg[match.end() :]
+    return annotations
+
+
 def _seg_term_pairs(es_seg: str, eu_seg: str | None) -> list[TermPair]:
     """Both sides carry <term src tgt> tags whose covered text is the surface
     form; the eu-side span is the attested inflected form of the target."""
-    eu_pool = _TERM_RE.findall(eu_seg or "")
+    eu_pool = _tag_annotations(eu_seg or "")
     pairs = []
-    for src, tgt, _surface in _TERM_RE.findall(es_seg):
+    for src, tgt, _surface in _tag_annotations(es_seg):
         matched = next((a for a in eu_pool if a[0] == src and a[1] == tgt), None)
         if matched:
             eu_pool.remove(matched)
