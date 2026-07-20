@@ -19,13 +19,17 @@ class TermPair(BaseModel):
 
 
 class TermEntry(BaseModel):
-    """`source` is verbatim as released; `source_clean` is set only where a
-    documented data issue exists (see reports/) and is the form to use for
-    locating the term in the source text."""
+    """`source` and `targets` are verbatim as released; `source_clean` is set
+    only where a documented data issue exists (see reports/) and is the form to
+    use for locating the term in the source text. `targets_extra` holds
+    private-side enrichment (renditions attested in the provider annotations
+    but absent from the released glossary) - additional acceptable matches,
+    never rendered back into the public form."""
 
     source: str
     targets: list[str]
     source_clean: str | None = None
+    targets_extra: list[str] = []
 
     @property
     def match_source(self) -> str:
