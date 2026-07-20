@@ -68,23 +68,57 @@ def max_disjoint(requirements: list[list[int]]) -> int:
     """Maximum number of requirements satisfiable with pairwise disjoint spans.
 
     Computes the same quantity as match_accuracy's exhaustive top-down search
-    (combinations x cartesian products), but with branch-and-bound so that
-    paragraph-scale inputs (30+ occurrences) stay tractable.
+    (combinations x cartesian products), with three additions to stay tractable
+    at paragraph scale: repeated occurrences of the same term have identical
+    candidate sets and are assigned as index-increasing subsets (combinations,
+    not permutations), a greedy assignment seeds the bound, and a node budget
+    caps pathological instances (returning the best assignment found, a lower
+    bound of the true maximum).
     """
-    active = sorted((r for r in requirements if r), key=len)
-    n = len(active)
+    groups: dict[tuple[int, ...], int] = {}
+    for requirement in requirements:
+        if requirement:
+            key = tuple(sorted(set(requirement)))
+            groups[key] = groups.get(key, 0) + 1
+    items = sorted(((list(masks), count) for masks, count in groups.items()), key=lambda item: len(item[0]))
+    capacity = [min(len(masks), count) for masks, count in items]
+    suffix = [0] * (len(items) + 1)
+    for i in range(len(items) - 1, -1, -1):
+        suffix[i] = suffix[i + 1] + capacity[i]
+    n = sum(count for _, count in items)
+
     best = 0
+    used_greedy = 0
+    for masks, count in items:
+        for mask in masks:
+            if count == 0:
+                break
+            if used_greedy & mask == 0:
+                used_greedy |= mask
+                count -= 1
+                best += 1
 
-    def descend(index: int, used: int, count: int) -> None:
-        nonlocal best
+    budget = 1_000_000
+
+    def descend(group: int, mask_index: int, picks_left: int, used: int, count: int) -> None:
+        nonlocal best, budget
         best = max(best, count)
-        if best == n or count + (n - index) <= best:
+        if best == n or budget <= 0:
             return
-        for mask in active[index]:
-            if used & mask == 0:
-                descend(index + 1, used | mask, count + 1)
-        descend(index + 1, used, count)
+        budget -= 1
+        if group == len(items):
+            return
+        masks, _ = items[group]
+        if picks_left == 0 or mask_index == len(masks):
+            descend(group + 1, 0, items[group + 1][1] if group + 1 < len(items) else 0, used, count)
+            return
+        if count + min(picks_left, len(masks) - mask_index) + suffix[group + 1] <= best:
+            return
+        mask = masks[mask_index]
+        if used & mask == 0:
+            descend(group, mask_index + 1, picks_left - 1, used | mask, count + 1)
+        descend(group, mask_index + 1, picks_left, used, count)
 
-    if n:
-        descend(0, 0, 0)
+    if items:
+        descend(0, 0, items[0][1], 0, 0)
     return best
