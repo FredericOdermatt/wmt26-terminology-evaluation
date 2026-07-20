@@ -840,17 +840,17 @@
                 {
                   "source": "after-cataract",
                   "target": "zaćma wtórna",
-                  "target_inflected": null
+                  "target_inflected": "zaćma wtórna"
                 },
                 {
                   "source": "binocular vision",
                   "target": "widzenie stereoskopowe",
-                  "target_inflected": null
+                  "target_inflected": "widzenia stereoskopowego"
                 },
                 {
                   "source": "cataract",
                   "target": "zaćma",
-                  "target_inflected": null
+                  "target_inflected": "zaćma"
                 }
               ]
             },
@@ -3712,7 +3712,7 @@
                 {
                   "source": "heavy episodic drinking",
                   "target": "epizodyczne duże upijanie się",
-                  "target_inflected": "epizodycznym  dużym upijanie się"
+                  "target_inflected": "epizodycznym, dużym upijanie się"
                 }
               ]
             },
@@ -4017,7 +4017,7 @@
                 {
                   "source": "chronic fatigue syndrome",
                   "target": "zespół chronicznego zmęczenia",
-                  "target_inflected": "zespół chronicznego zmęczenia"
+                  "target_inflected": "zespól chronicznego zmęczenia"
                 }
               ]
             },
@@ -4028,7 +4028,7 @@
                 {
                   "source": "chronic fatigue syndrome",
                   "target": "zespół chronicznego zmęczenia",
-                  "target_inflected": "zespół chronicznego zmęczenia"
+                  "target_inflected": "zespól chronicznego zmęczenia"
                 }
               ]
             },
@@ -5945,7 +5945,7 @@
                 {
                   "source": "Balint syndrome",
                   "target": "zespół Bálinta",
-                  "target_inflected": "zespół Bálinta"
+                  "target_inflected": "zespół Balinta"
                 }
               ]
             }
@@ -6231,7 +6231,7 @@
                 {
                   "source": "eating disorder",
                   "target": "zaburzenie odżywiania",
-                  "target_inflected": "zaburzenie odżywiania"
+                  "target_inflected": "zaburzenia odżywiania"
                 }
               ]
             },
@@ -6743,7 +6743,7 @@
                 {
                   "source": "Balint syndrome",
                   "target": "zespół Bálinta",
-                  "target_inflected": "zespół Bálinta"
+                  "target_inflected": "zespół Balinta"
                 }
               ]
             },
@@ -6781,12 +6781,12 @@
                 {
                   "source": "athlete’s foot",
                   "target": "stopa sportowca",
-                  "target_inflected": null
+                  "target_inflected": "stopę sportowca"
                 },
                 {
                   "source": "tinea pedis",
                   "target": "stopa sportowca",
-                  "target_inflected": null
+                  "target_inflected": "stopę sportowca"
                 }
               ]
             }
@@ -6805,17 +6805,17 @@
                 {
                   "source": "aetiology",
                   "target": "etiologia",
-                  "target_inflected": null
+                  "target_inflected": "etiologię"
                 },
                 {
                   "source": "etiology",
                   "target": "etiologia",
-                  "target_inflected": null
+                  "target_inflected": "etiologię"
                 },
                 {
                   "source": "histology",
                   "target": "histologia",
-                  "target_inflected": null
+                  "target_inflected": "histologicznego"
                 }
               ]
             },
@@ -7093,17 +7093,17 @@
         {
           "source": "after-cataract",
           "target": "zaćma wtórna",
-          "target_inflected": null
+          "target_inflected": "zaćma wtórna"
         },
         {
           "source": "binocular vision",
           "target": "widzenie stereoskopowe",
-          "target_inflected": null
+          "target_inflected": "widzenia stereoskopowego"
         },
         {
           "source": "cataract",
           "target": "zaćma",
-          "target_inflected": null
+          "target_inflected": "zaćma"
         }
       ]
     },

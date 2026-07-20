@@ -108,12 +108,12 @@
                 {
                   "source": "cam follower",
                   "target": "popychacz",
-                  "target_inflected": null
+                  "target_inflected": "popychacza"
                 },
                 {
                   "source": "tappet",
                   "target": "popychacz",
-                  "target_inflected": null
+                  "target_inflected": "popychacza"
                 }
               ]
             },
@@ -213,7 +213,7 @@
                 {
                   "source": "camshaft bearing",
                   "target": "lożysko wału rozrządu",
-                  "target_inflected": "lożyskiem wału rozrządu"
+                  "target_inflected": "łożyskiem wału rozrządu"
                 }
               ]
             },
@@ -224,7 +224,7 @@
                 {
                   "source": "camshaft bearing",
                   "target": "łożysko wału rozrządu",
-                  "target_inflected": "łożyska wału rozrządu"
+                  "target_inflected": "lożyska wału rozrządu"
                 }
               ]
             },
@@ -235,7 +235,7 @@
                 {
                   "source": "camshaft cover",
                   "target": "pokrywa wału rozrzadu",
-                  "target_inflected": "pokrywą wałka rozrządu"
+                  "target_inflected": "pokrywą wałka rozrzędu"
                 }
               ]
             },
@@ -262,7 +262,7 @@
                 {
                   "source": "camshaft end float",
                   "target": "luz osiowy wału rozrządu",
-                  "target_inflected": "luzu osiowego wału rozrzędu"
+                  "target_inflected": "luzu osiowego wału rozrządu"
                 }
               ]
             },
@@ -368,7 +368,7 @@
                 {
                   "source": "camshaft sprocket",
                   "target": "koło łańcuchowe wału rozrządu",
-                  "target_inflected": "koło łańcuchowe wału rozrządu"
+                  "target_inflected": "Kolo łańcuchowe wału rozrrządu"
                 }
               ]
             },
@@ -384,12 +384,12 @@
                 {
                   "source": "camshaft pinion",
                   "target": "koło zębate wału rozrządu",
-                  "target_inflected": "koło zębate wału rozrządu"
+                  "target_inflected": "koło zębate wału rozrzędu"
                 },
                 {
                   "source": "camshaft sprocket",
                   "target": "koło łańcuhcowe wału rozrządu",
-                  "target_inflected": "koło łańcuhcowe wału rozrządu"
+                  "target_inflected": "koło łańcuchowe wału rozrządu"
                 }
               ]
             },
@@ -411,7 +411,7 @@
                 {
                   "source": "overhead camshaft",
                   "target": "górny wał rozrządu",
-                  "target_inflected": "głównego wału rozrządu"
+                  "target_inflected": "górnego wału rozrządu"
                 }
               ]
             },
@@ -455,7 +455,7 @@
                 {
                   "source": "single overhead camshaft",
                   "target": "pojedyńczy głowicowy wałek rozrządu",
-                  "target_inflected": "pojedyńczym głowicowym wałkiem rozrządu"
+                  "target_inflected": "pojedyńczym głowicowy wałkiem rozrządu"
                 }
               ]
             },
@@ -525,7 +525,7 @@
                 {
                   "source": "rocker cover",
                   "target": "osłona zaworów",
-                  "target_inflected": "osłoną zaworową"
+                  "target_inflected": "osłoną zworową"
                 }
               ]
             },
@@ -536,12 +536,12 @@
                 {
                   "source": "rocker cover",
                   "target": "osłona zaworów",
-                  "target_inflected": null
+                  "target_inflected": "osłona zaworów"
                 },
                 {
                   "source": "valve cover",
                   "target": "osłona zaworów",
-                  "target_inflected": null
+                  "target_inflected": "osłona zaworów"
                 }
               ]
             },
@@ -552,12 +552,12 @@
                 {
                   "source": "rocker cover",
                   "target": "osłona zaworów",
-                  "target_inflected": null
+                  "target_inflected": "osłony zaworowej"
                 },
                 {
                   "source": "valve cover",
                   "target": "osłona zaworów",
-                  "target_inflected": null
+                  "target_inflected": "osłony zaworowej"
                 }
               ]
             }
@@ -609,7 +609,7 @@
                 {
                   "source": "intake port",
                   "target": "otwór dolotowy",
-                  "target_inflected": "otowrze dolotowym"
+                  "target_inflected": "otworze dolotowym"
                 }
               ]
             },
@@ -620,7 +620,7 @@
                 {
                   "source": "intake port",
                   "target": "otwór dolotowy",
-                  "target_inflected": "otowru dolotowego"
+                  "target_inflected": "otworu dolotowego"
                 }
               ]
             },
@@ -664,7 +664,7 @@
                 {
                   "source": "exhaust port",
                   "target": "otwor wylotowy",
-                  "target_inflected": "otowru wylotowego"
+                  "target_inflected": "otworu wylotowego"
                 },
                 {
                   "source": "exhaust valve",
@@ -695,7 +695,7 @@
                 {
                   "source": "exhaust valve",
                   "target": "zawór wydechowy",
-                  "target_inflected": "zawor wydechowy"
+                  "target_inflected": "zawór wydechowy"
                 },
                 {
                   "source": "inlet valve",
@@ -804,12 +804,12 @@
                 {
                   "source": "valve cotter",
                   "target": "zamek zaworu",
-                  "target_inflected": null
+                  "target_inflected": "zamek zaworu"
                 },
                 {
                   "source": "valve lock",
                   "target": "zamek zaworu",
-                  "target_inflected": null
+                  "target_inflected": "zamek zaworu"
                 }
               ]
             },
@@ -836,17 +836,17 @@
                 {
                   "source": "valve cotter",
                   "target": "zamek zaworu",
-                  "target_inflected": null
+                  "target_inflected": "zamek zaworu"
                 },
                 {
                   "source": "valve gear",
                   "target": "napęd zaworu",
-                  "target_inflected": null
+                  "target_inflected": "napęd zaworu"
                 },
                 {
                   "source": "valve lock",
                   "target": "zamek zaworu",
-                  "target_inflected": null
+                  "target_inflected": "zamek zaworu"
                 }
               ]
             },
@@ -1071,32 +1071,32 @@
                 {
                   "source": "belt drive",
                   "target": "napęd pasowy",
-                  "target_inflected": null
+                  "target_inflected": "napęd pasowy"
                 },
                 {
                   "source": "belt tensioner",
                   "target": "napinacz paska",
-                  "target_inflected": null
+                  "target_inflected": "napinacza paska"
                 },
                 {
                   "source": "chain drive",
                   "target": "przekladnia łańcuchowa",
-                  "target_inflected": null
+                  "target_inflected": "przekładnię łańcuchową"
                 },
                 {
                   "source": "tensioning pulley",
                   "target": "napinacz paska",
-                  "target_inflected": null
+                  "target_inflected": "napinacza paska"
                 },
                 {
                   "source": "timing belt",
                   "target": "pasek rozrządu",
-                  "target_inflected": null
+                  "target_inflected": "paskiem rozrządu"
                 },
                 {
                   "source": "timing chain",
                   "target": "pasek rozrządu",
-                  "target_inflected": null
+                  "target_inflected": "paskiem rozrządu"
                 }
               ]
             },
@@ -1107,17 +1107,17 @@
                 {
                   "source": "cam belt",
                   "target": "pasek rozrządu",
-                  "target_inflected": null
+                  "target_inflected": "pasek rozrządu"
                 },
                 {
                   "source": "deflection roller",
                   "target": "rolka napinacza pasa",
-                  "target_inflected": null
+                  "target_inflected": "rolka napinacza pasa"
                 },
                 {
                   "source": "timing belt",
                   "target": "pasek rozrządu",
-                  "target_inflected": null
+                  "target_inflected": "pasek rozrządu"
                 }
               ]
             },
@@ -1172,7 +1172,7 @@
                 {
                   "source": "crank sensor",
                   "target": "czujnik wału rozrządu",
-                  "target_inflected": "czujnika wału rozrządu"
+                  "target_inflected": "Czujnik wału rozrządu"
                 }
               ]
             },
@@ -1308,7 +1308,7 @@
                 {
                   "source": "turn signal",
                   "target": "kierunkowskaz",
-                  "target_inflected": "kierunkowskazu"
+                  "target_inflected": "kierunkowskazów"
                 }
               ]
             },
@@ -1418,7 +1418,7 @@
                 {
                   "source": "fog light",
                   "target": "światło przeciwmgielne",
-                  "target_inflected": "światłu przeciwmgłowemu"
+                  "target_inflected": "światłu przeciwmgielnemu"
                 }
               ]
             },
@@ -2194,7 +2194,7 @@
                 {
                   "source": "wrist pin boss",
                   "target": "piasta sworznia tłokowego",
-                  "target_inflected": "piasty sworzenia tłokowego"
+                  "target_inflected": "piasty sworznia tłokowego"
                 }
               ]
             },
@@ -2205,7 +2205,7 @@
                 {
                   "source": "piston boss",
                   "target": "piasta sworznia",
-                  "target_inflected": "piastą sworzenia"
+                  "target_inflected": "piastą sworznia"
                 },
                 {
                   "source": "powertrain",
@@ -2221,7 +2221,7 @@
                 {
                   "source": "wrist pin boss",
                   "target": "piasta sworzenia tłokowego",
-                  "target_inflected": "piasty sworzenia tłokowego"
+                  "target_inflected": "piasty sworznia tłokowego"
                 }
               ]
             },
@@ -2237,7 +2237,7 @@
                 {
                   "source": "wrist pin",
                   "target": "sworzeń tłokowy",
-                  "target_inflected": "sworzenia"
+                  "target_inflected": "sworznia"
                 }
               ]
             },
@@ -2383,12 +2383,12 @@
                 {
                   "source": "Circlip",
                   "target": "pierścień sprężynujący",
-                  "target_inflected": null
+                  "target_inflected": "pierścień sprężynujący"
                 },
                 {
                   "source": "snap ring",
                   "target": "pierścień sprężynujący",
-                  "target_inflected": null
+                  "target_inflected": "pierścień sprężynujący"
                 }
               ]
             }
@@ -2472,17 +2472,17 @@
                 {
                   "source": "big-end bearing",
                   "target": "łożysko korbowe łba korbu",
-                  "target_inflected": null
+                  "target_inflected": "łożysku korbowym łba korbu"
                 },
                 {
                   "source": "crank pin",
                   "target": "czop korbowy",
-                  "target_inflected": null
+                  "target_inflected": "czopu korbowego"
                 },
                 {
                   "source": "crankpin bearing",
                   "target": "łożysko korbowe łba korbu",
-                  "target_inflected": null
+                  "target_inflected": "łożysku korbowym łba korbu"
                 }
               ]
             },
@@ -2596,7 +2596,7 @@
                 {
                   "source": "crank pin",
                   "target": "czop korbowy",
-                  "target_inflected": "czopu kobowego"
+                  "target_inflected": "czopu korbowego"
                 },
                 {
                   "source": "plain bearing",
@@ -2963,7 +2963,7 @@
                 {
                   "source": "flat engine",
                   "target": "silnik o przeciwległych cylindrach",
-                  "target_inflected": "silniku o przeciwległych cylundrach"
+                  "target_inflected": "silniku o przeciwległych cylindrach"
                 }
               ]
             },
@@ -3023,12 +3023,12 @@
                 {
                   "source": "piston engine",
                   "target": "silnik tłokowy",
-                  "target_inflected": null
+                  "target_inflected": "silnikach tłokowych"
                 },
                 {
                   "source": "reciprocating engine",
                   "target": "silnik tłokowy",
-                  "target_inflected": null
+                  "target_inflected": "silnikach tłokowych"
                 }
               ]
             },
@@ -3044,7 +3044,7 @@
                 {
                   "source": "flat engine",
                   "target": "silnik o przeciwległych cylindrach",
-                  "target_inflected": null
+                  "target_inflected": "silnika o przeciwległych cylindrach"
                 }
               ]
             },
@@ -3172,7 +3172,7 @@
                 {
                   "source": "detonation sensor",
                   "target": "czujnik spalania stukowego",
-                  "target_inflected": "czujnikowi spalania stukowgo"
+                  "target_inflected": "czujnikowi spalania stukowego"
                 }
               ]
             },
@@ -3315,7 +3315,7 @@
                 {
                   "source": "top dead center",
                   "target": "górne martwe położenie",
-                  "target_inflected": "górnym matrwym położeniu"
+                  "target_inflected": "górnym martwym położeniu"
                 }
               ]
             },
@@ -3347,12 +3347,12 @@
                 {
                   "source": "pre-chamber",
                   "target": "komora wstępna",
-                  "target_inflected": null
+                  "target_inflected": "komory wstępne"
                 },
                 {
                   "source": "swirl chamber",
                   "target": "komora wstępna",
-                  "target_inflected": null
+                  "target_inflected": "komory wstępne"
                 }
               ]
             }
@@ -3692,7 +3692,7 @@
                 {
                   "source": "brake shoe",
                   "target": "szczęka hamulca bębnowego",
-                  "target_inflected": null
+                  "target_inflected": "szczęce hamulca bębnowego"
                 },
                 {
                   "source": "friction material",
@@ -4144,12 +4144,12 @@
                 {
                   "source": "brake grease",
                   "target": "smar do hamulców",
-                  "target_inflected": null
+                  "target_inflected": "smaru do hamulców"
                 },
                 {
                   "source": "brake lubricant",
                   "target": "smar do hamulców",
-                  "target_inflected": null
+                  "target_inflected": "smaru do hamulców"
                 }
               ]
             },
@@ -4492,7 +4492,7 @@
                 {
                   "source": "alternator housing",
                   "target": "obudowa alternatora",
-                  "target_inflected": "obudowa alternatora"
+                  "target_inflected": "obudowa alternatowa"
                 },
                 {
                   "source": "bearing",
@@ -4606,7 +4606,7 @@
                 {
                   "source": "gasket",
                   "target": "uszczelka elementu żarzącego",
-                  "target_inflected": "uszczęlkę elemntu żarzącego"
+                  "target_inflected": "uszczelkę elementu żarzącego"
                 },
                 {
                   "source": "isolation ring",
@@ -4705,7 +4705,7 @@
                 {
                   "source": "glow time relay",
                   "target": "przekaźnik zapłonu",
-                  "target_inflected": "przekaźnika zapłonu"
+                  "target_inflected": "przekażnika zapłonu"
                 }
               ]
             },
@@ -4716,17 +4716,17 @@
                 {
                   "source": "annular gap",
                   "target": "szczelina korpusu",
-                  "target_inflected": null
+                  "target_inflected": "szczelina korpusu"
                 },
                 {
                   "source": "compression-ignition engine",
                   "target": "silnik wysokoprężny",
-                  "target_inflected": null
+                  "target_inflected": "silnika wysokoprężnego"
                 },
                 {
                   "source": "glow plug",
                   "target": "świeca żarowa",
-                  "target_inflected": null
+                  "target_inflected": "świeca żarowa"
                 },
                 {
                   "source": "glow time control unit",
@@ -4755,7 +4755,7 @@
                 {
                   "source": "fuse box",
                   "target": "skrzynka bezpieczników",
-                  "target_inflected": "skrzynki bezieczników"
+                  "target_inflected": "skrzynki bezpieczników"
                 }
               ]
             },
@@ -5011,22 +5011,22 @@
                 {
                   "source": "cable harness",
                   "target": "wiązka elektryczna",
-                  "target_inflected": null
+                  "target_inflected": "wiązki elektrycznej"
                 },
                 {
                   "source": "CAN bus",
                   "target": "magistrala CAN",
-                  "target_inflected": null
+                  "target_inflected": "magistrali CAN"
                 },
                 {
                   "source": "wire harness",
                   "target": "wiązka elektryczna",
-                  "target_inflected": null
+                  "target_inflected": "wiązki elektrycznej"
                 },
                 {
                   "source": "wiring harness",
                   "target": "wiązka elektryczna",
-                  "target_inflected": null
+                  "target_inflected": "wiązki elektrycznej"
                 }
               ]
             },
@@ -5300,12 +5300,12 @@
                 {
                   "source": "charging port",
                   "target": "gniazdo ładowania",
-                  "target_inflected": null
+                  "target_inflected": "gniazdo ładowania"
                 },
                 {
                   "source": "charging socket",
                   "target": "gniazdo ładowania",
-                  "target_inflected": null
+                  "target_inflected": "gniazdo ładowania"
                 }
               ]
             },
@@ -5435,7 +5435,7 @@
                 {
                   "source": "aerodynamic drag",
                   "target": "opór areodynamiczny",
-                  "target_inflected": "oporem areodynamicznym"
+                  "target_inflected": "oporem aerodynamicznym"
                 }
               ]
             },
@@ -5473,7 +5473,7 @@
                 {
                   "source": "aerodynamic drag",
                   "target": "opór aredynamiczny",
-                  "target_inflected": "opór aredynamiczny"
+                  "target_inflected": "opór aerodynamiczny"
                 },
                 {
                   "source": "charging socket",
@@ -5654,17 +5654,17 @@
                 {
                   "source": "absorption charge",
                   "target": "ładowanie absorbcyjne",
-                  "target_inflected": "ładowanie absorbcyjne"
+                  "target_inflected": "ładowanie absorpcyjne"
                 },
                 {
                   "source": "bulk loading",
                   "target": "ładowania zbiorczego",
-                  "target_inflected": "ładowanie zbiorcze"
+                  "target_inflected": "ładowania zbiorczego"
                 },
                 {
                   "source": "lead-acid battery",
                   "target": "akumulatora kwasowo-ołowiowego",
-                  "target_inflected": "akumulator kwasowo-ołowiowy"
+                  "target_inflected": "akumulatora kwasowo-ołowiowego"
                 }
               ]
             },
@@ -5697,7 +5697,7 @@
                 {
                   "source": "absoption charge",
                   "target": "ładowania absorbcyjnego",
-                  "target_inflected": "ładowanie absorbcyjne"
+                  "target_inflected": "ładowania absorpcyjnego"
                 },
                 {
                   "source": "auxiliary power outlet",
@@ -5707,12 +5707,12 @@
                 {
                   "source": "bimetal strip",
                   "target": "taśmą termobimetalu",
-                  "target_inflected": "taśma termobimetalu"
+                  "target_inflected": "taśmą termobimetalu"
                 },
                 {
                   "source": "bulk loading",
                   "target": "ładowania zbiorczego",
-                  "target_inflected": "ładowanie zbiorcze"
+                  "target_inflected": "ładowania zbiorczego"
                 },
                 {
                   "source": "DC connector",
@@ -5722,7 +5722,7 @@
                 {
                   "source": "desulphation charge",
                   "target": "ładowaniu odsiarczającym",
-                  "target_inflected": "ładowanie odsiarczające"
+                  "target_inflected": "ładowaniu odsiarczającym"
                 },
                 {
                   "source": "lead-acid battery",
@@ -5876,7 +5876,7 @@
                 {
                   "source": "power-steering pump pulley",
                   "target": "krążek linowy",
-                  "target_inflected": "krążek linowy"
+                  "target_inflected": "krążek liniowy"
                 }
               ]
             },
@@ -6055,12 +6055,12 @@
                 {
                   "source": "cardan shaft",
                   "target": "wał napędowy",
-                  "target_inflected": null
+                  "target_inflected": "wał napędowy"
                 },
                 {
                   "source": "longitudinal shaft",
                   "target": "wał napędowy",
-                  "target_inflected": null
+                  "target_inflected": "wał napędowy"
                 }
               ]
             },
@@ -6114,27 +6114,27 @@
                 {
                   "source": "4-wheel drive",
                   "target": "napęd na cztery koła",
-                  "target_inflected": null
+                  "target_inflected": "napędem na cztery koła"
                 },
                 {
                   "source": "all-wheel drive",
                   "target": "AWD",
-                  "target_inflected": null
+                  "target_inflected": "AWD"
                 },
                 {
                   "source": "four-wheel drive",
                   "target": "napęd na cztery koła",
-                  "target_inflected": null
+                  "target_inflected": "napędem na cztery koła"
                 },
                 {
                   "source": "front wheel drive",
                   "target": "napęd przedni",
-                  "target_inflected": null
+                  "target_inflected": "napędem przednim"
                 },
                 {
                   "source": "rear-wheel drive",
                   "target": "napęd na tylne koła",
-                  "target_inflected": null
+                  "target_inflected": "napędem na tylne koła"
                 }
               ]
             }
@@ -6164,17 +6164,17 @@
                 {
                   "source": "cardan joint",
                   "target": "przegub Cardana",
-                  "target_inflected": null
+                  "target_inflected": "przegubu Cardana"
                 },
                 {
                   "source": "u-joint",
                   "target": "przegub Cardana",
-                  "target_inflected": null
+                  "target_inflected": "przegubu Cardana"
                 },
                 {
                   "source": "universal coupling",
                   "target": "przegub Cardana",
-                  "target_inflected": null
+                  "target_inflected": "przegubu Cardana"
                 }
               ]
             },
@@ -6185,22 +6185,22 @@
                 {
                   "source": "cardan joint",
                   "target": "przegub Cardana",
-                  "target_inflected": null
+                  "target_inflected": "przegub Cardana"
                 },
                 {
                   "source": "u-joint",
                   "target": "przegub Cardana",
-                  "target_inflected": null
+                  "target_inflected": "przegub Cardana"
                 },
                 {
                   "source": "universal coupling",
                   "target": "przegub Cardana",
-                  "target_inflected": null
+                  "target_inflected": "przegub Cardana"
                 },
                 {
                   "source": "universal joint",
                   "target": "przegub Cardana",
-                  "target_inflected": null
+                  "target_inflected": "przegub Cardana"
                 }
               ]
             },
@@ -6308,22 +6308,22 @@
                 {
                   "source": "hub assembly",
                   "target": "piasta",
-                  "target_inflected": null
+                  "target_inflected": "piasty"
                 },
                 {
                   "source": "wheel hub assembly",
                   "target": "piasta",
-                  "target_inflected": null
+                  "target_inflected": "piasty"
                 },
                 {
                   "source": "wheel hub bearing",
                   "target": "piasta",
-                  "target_inflected": null
+                  "target_inflected": "piasty"
                 },
                 {
                   "source": "wheel hub unit",
                   "target": "piasta",
-                  "target_inflected": null
+                  "target_inflected": "piasty"
                 }
               ]
             },
@@ -6356,12 +6356,12 @@
                 {
                   "source": "portal axle",
                   "target": "zwolnica",
-                  "target_inflected": null
+                  "target_inflected": "zwolnica"
                 },
                 {
                   "source": "portal gear lift",
                   "target": "zwolnica",
-                  "target_inflected": null
+                  "target_inflected": "zwolnica"
                 }
               ]
             },
@@ -6486,12 +6486,12 @@
                 {
                   "source": "coupling rod",
                   "target": "drążek sprzęgający",
-                  "target_inflected": null
+                  "target_inflected": "drążka sprzęgającego"
                 },
                 {
                   "source": "stabilizer strut",
                   "target": "drążek sprzęgający",
-                  "target_inflected": null
+                  "target_inflected": "drążka sprzęgającego"
                 }
               ]
             },
@@ -6593,12 +6593,12 @@
                 {
                   "source": "torsion bar suspension",
                   "target": "drążek skrętny",
-                  "target_inflected": null
+                  "target_inflected": "drążek skrętny"
                 },
                 {
                   "source": "torsion spring suspension",
                   "target": "drążek skrętny",
-                  "target_inflected": null
+                  "target_inflected": "drążek skrętny"
                 }
               ]
             }
@@ -6984,7 +6984,7 @@
                 {
                   "source": "set of coilovers",
                   "target": "zawieszenie gwintowane",
-                  "target_inflected": "zawieszenia gwintowanego"
+                  "target_inflected": "zawieszenia gwintownego"
                 }
               ]
             },
@@ -7286,12 +7286,12 @@
                 {
                   "source": "charge air cooler",
                   "target": "chłodnica powietrza doładowanego",
-                  "target_inflected": null
+                  "target_inflected": "chłodnica powietrza doładowanego"
                 },
                 {
                   "source": "intercooler",
                   "target": "chłodnica powietrza doładowanego",
-                  "target_inflected": null
+                  "target_inflected": "chłodnica powietrza doładowanego"
                 }
               ]
             },
@@ -7302,12 +7302,12 @@
                 {
                   "source": "charge air cooler",
                   "target": "chłodnica powietrza doładowanego",
-                  "target_inflected": null
+                  "target_inflected": "chłodnica powietrza doładowanego"
                 },
                 {
                   "source": "intercooler",
                   "target": "chłodnica powietrza doładowanego",
-                  "target_inflected": null
+                  "target_inflected": "chłodnica powietrza doładowanego"
                 }
               ]
             },
@@ -7550,12 +7550,12 @@
                 {
                   "source": "inlet manifold",
                   "target": "kolektor dolotowy",
-                  "target_inflected": null
+                  "target_inflected": "kolektor dolotowy"
                 },
                 {
                   "source": "intake manifold",
                   "target": "kolektor dolotowy",
-                  "target_inflected": null
+                  "target_inflected": "kolektor dolotowy"
                 }
               ]
             },
@@ -8480,12 +8480,12 @@
         {
           "source": "cam follower",
           "target": "popychacz",
-          "target_inflected": null
+          "target_inflected": "popychacza"
         },
         {
           "source": "tappet",
           "target": "popychacz",
-          "target_inflected": null
+          "target_inflected": "popychacza"
         }
       ]
     },
@@ -8519,7 +8519,7 @@
         {
           "source": "camshaft end float",
           "target": "luz osiowy wału rozrządu",
-          "target_inflected": "luzu osiowego wału rozrzędu"
+          "target_inflected": "luzu osiowego wału rozrządu"
         }
       ]
     },
@@ -8577,12 +8577,12 @@
         {
           "source": "camshaft pinion",
           "target": "koło zębate wału rozrządu",
-          "target_inflected": "koło zębate wału rozrządu"
+          "target_inflected": "koło zębate wału rozrzędu"
         },
         {
           "source": "camshaft sprocket",
           "target": "koło łańcuhcowe wału rozrządu",
-          "target_inflected": "koło łańcuhcowe wału rozrządu"
+          "target_inflected": "koło łańcuchowe wału rozrządu"
         }
       ]
     },
@@ -8628,12 +8628,12 @@
         {
           "source": "rocker cover",
           "target": "osłona zaworów",
-          "target_inflected": null
+          "target_inflected": "osłona zaworów"
         },
         {
           "source": "valve cover",
           "target": "osłona zaworów",
-          "target_inflected": null
+          "target_inflected": "osłona zaworów"
         }
       ]
     },
@@ -8657,7 +8657,7 @@
         {
           "source": "exhaust port",
           "target": "otwor wylotowy",
-          "target_inflected": "otowru wylotowego"
+          "target_inflected": "otworu wylotowego"
         },
         {
           "source": "exhaust valve",
@@ -8701,17 +8701,17 @@
         {
           "source": "valve cotter",
           "target": "zamek zaworu",
-          "target_inflected": null
+          "target_inflected": "zamek zaworu"
         },
         {
           "source": "valve gear",
           "target": "napęd zaworu",
-          "target_inflected": null
+          "target_inflected": "napęd zaworu"
         },
         {
           "source": "valve lock",
           "target": "zamek zaworu",
-          "target_inflected": null
+          "target_inflected": "zamek zaworu"
         }
       ]
     },
@@ -8762,32 +8762,32 @@
         {
           "source": "belt drive",
           "target": "napęd pasowy",
-          "target_inflected": null
+          "target_inflected": "napęd pasowy"
         },
         {
           "source": "belt tensioner",
           "target": "napinacz paska",
-          "target_inflected": null
+          "target_inflected": "napinacza paska"
         },
         {
           "source": "chain drive",
           "target": "przekladnia łańcuchowa",
-          "target_inflected": null
+          "target_inflected": "przekładnię łańcuchową"
         },
         {
           "source": "tensioning pulley",
           "target": "napinacz paska",
-          "target_inflected": null
+          "target_inflected": "napinacza paska"
         },
         {
           "source": "timing belt",
           "target": "pasek rozrządu",
-          "target_inflected": null
+          "target_inflected": "paskiem rozrządu"
         },
         {
           "source": "timing chain",
           "target": "pasek rozrządu",
-          "target_inflected": null
+          "target_inflected": "paskiem rozrządu"
         }
       ]
     },
@@ -8799,17 +8799,17 @@
         {
           "source": "cam belt",
           "target": "pasek rozrządu",
-          "target_inflected": null
+          "target_inflected": "pasek rozrządu"
         },
         {
           "source": "deflection roller",
           "target": "rolka napinacza pasa",
-          "target_inflected": null
+          "target_inflected": "rolka napinacza pasa"
         },
         {
           "source": "timing belt",
           "target": "pasek rozrządu",
-          "target_inflected": null
+          "target_inflected": "pasek rozrządu"
         }
       ]
     },
@@ -9137,7 +9137,7 @@
         {
           "source": "wrist pin boss",
           "target": "piasta sworznia tłokowego",
-          "target_inflected": "piasty sworzenia tłokowego"
+          "target_inflected": "piasty sworznia tłokowego"
         }
       ]
     },
@@ -9149,7 +9149,7 @@
         {
           "source": "piston boss",
           "target": "piasta sworznia",
-          "target_inflected": "piastą sworzenia"
+          "target_inflected": "piastą sworznia"
         },
         {
           "source": "powertrain",
@@ -9229,12 +9229,12 @@
         {
           "source": "Circlip",
           "target": "pierścień sprężynujący",
-          "target_inflected": null
+          "target_inflected": "pierścień sprężynujący"
         },
         {
           "source": "snap ring",
           "target": "pierścień sprężynujący",
-          "target_inflected": null
+          "target_inflected": "pierścień sprężynujący"
         }
       ]
     },
@@ -9263,17 +9263,17 @@
         {
           "source": "big-end bearing",
           "target": "łożysko korbowe łba korbu",
-          "target_inflected": null
+          "target_inflected": "łożysku korbowym łba korbu"
         },
         {
           "source": "crank pin",
           "target": "czop korbowy",
-          "target_inflected": null
+          "target_inflected": "czopu korbowego"
         },
         {
           "source": "crankpin bearing",
           "target": "łożysko korbowe łba korbu",
-          "target_inflected": null
+          "target_inflected": "łożysku korbowym łba korbu"
         }
       ]
     },
@@ -9518,7 +9518,7 @@
         {
           "source": "flat engine",
           "target": "silnik o przeciwległych cylindrach",
-          "target_inflected": "silniku o przeciwległych cylundrach"
+          "target_inflected": "silniku o przeciwległych cylindrach"
         }
       ]
     },
@@ -9559,12 +9559,12 @@
         {
           "source": "piston engine",
           "target": "silnik tłokowy",
-          "target_inflected": null
+          "target_inflected": "silnikach tłokowych"
         },
         {
           "source": "reciprocating engine",
           "target": "silnik tłokowy",
-          "target_inflected": null
+          "target_inflected": "silnikach tłokowych"
         }
       ]
     },
@@ -9617,7 +9617,7 @@
         {
           "source": "detonation sensor",
           "target": "czujnik spalania stukowego",
-          "target_inflected": "czujnikowi spalania stukowgo"
+          "target_inflected": "czujnikowi spalania stukowego"
         }
       ]
     },
@@ -9719,12 +9719,12 @@
         {
           "source": "pre-chamber",
           "target": "komora wstępna",
-          "target_inflected": null
+          "target_inflected": "komory wstępne"
         },
         {
           "source": "swirl chamber",
           "target": "komora wstępna",
-          "target_inflected": null
+          "target_inflected": "komory wstępne"
         }
       ]
     },
@@ -9828,7 +9828,7 @@
         {
           "source": "brake shoe",
           "target": "szczęka hamulca bębnowego",
-          "target_inflected": null
+          "target_inflected": "szczęce hamulca bębnowego"
         },
         {
           "source": "friction material",
@@ -9966,12 +9966,12 @@
         {
           "source": "brake grease",
           "target": "smar do hamulców",
-          "target_inflected": null
+          "target_inflected": "smaru do hamulców"
         },
         {
           "source": "brake lubricant",
           "target": "smar do hamulców",
-          "target_inflected": null
+          "target_inflected": "smaru do hamulców"
         }
       ]
     },
@@ -10087,7 +10087,7 @@
         {
           "source": "alternator housing",
           "target": "obudowa alternatora",
-          "target_inflected": "obudowa alternatora"
+          "target_inflected": "obudowa alternatowa"
         },
         {
           "source": "bearing",
@@ -10163,7 +10163,7 @@
         {
           "source": "gasket",
           "target": "uszczelka elementu żarzącego",
-          "target_inflected": "uszczęlkę elemntu żarzącego"
+          "target_inflected": "uszczelkę elementu żarzącego"
         },
         {
           "source": "isolation ring",
@@ -10217,17 +10217,17 @@
         {
           "source": "annular gap",
           "target": "szczelina korpusu",
-          "target_inflected": null
+          "target_inflected": "szczelina korpusu"
         },
         {
           "source": "compression-ignition engine",
           "target": "silnik wysokoprężny",
-          "target_inflected": null
+          "target_inflected": "silnika wysokoprężnego"
         },
         {
           "source": "glow plug",
           "target": "świeca żarowa",
-          "target_inflected": null
+          "target_inflected": "świeca żarowa"
         },
         {
           "source": "glow time control unit",
@@ -10434,22 +10434,22 @@
         {
           "source": "cable harness",
           "target": "wiązka elektryczna",
-          "target_inflected": null
+          "target_inflected": "wiązki elektrycznej"
         },
         {
           "source": "CAN bus",
           "target": "magistrala CAN",
-          "target_inflected": null
+          "target_inflected": "magistrali CAN"
         },
         {
           "source": "wire harness",
           "target": "wiązka elektryczna",
-          "target_inflected": null
+          "target_inflected": "wiązki elektrycznej"
         },
         {
           "source": "wiring harness",
           "target": "wiązka elektryczna",
-          "target_inflected": null
+          "target_inflected": "wiązki elektrycznej"
         }
       ]
     },
@@ -10635,12 +10635,12 @@
         {
           "source": "charging port",
           "target": "gniazdo ładowania",
-          "target_inflected": null
+          "target_inflected": "gniazdo ładowania"
         },
         {
           "source": "charging socket",
           "target": "gniazdo ładowania",
-          "target_inflected": null
+          "target_inflected": "gniazdo ładowania"
         }
       ]
     },
@@ -10751,7 +10751,7 @@
         {
           "source": "aerodynamic drag",
           "target": "opór aredynamiczny",
-          "target_inflected": "opór aredynamiczny"
+          "target_inflected": "opór aerodynamiczny"
         },
         {
           "source": "charging socket",
@@ -10860,17 +10860,17 @@
         {
           "source": "absorption charge",
           "target": "ładowanie absorbcyjne",
-          "target_inflected": "ładowanie absorbcyjne"
+          "target_inflected": "ładowanie absorpcyjne"
         },
         {
           "source": "bulk loading",
           "target": "ładowania zbiorczego",
-          "target_inflected": "ładowanie zbiorcze"
+          "target_inflected": "ładowania zbiorczego"
         },
         {
           "source": "lead-acid battery",
           "target": "akumulatora kwasowo-ołowiowego",
-          "target_inflected": "akumulator kwasowo-ołowiowy"
+          "target_inflected": "akumulatora kwasowo-ołowiowego"
         }
       ]
     },
@@ -10906,7 +10906,7 @@
         {
           "source": "absoption charge",
           "target": "ładowania absorbcyjnego",
-          "target_inflected": "ładowanie absorbcyjne"
+          "target_inflected": "ładowania absorpcyjnego"
         },
         {
           "source": "auxiliary power outlet",
@@ -10916,12 +10916,12 @@
         {
           "source": "bimetal strip",
           "target": "taśmą termobimetalu",
-          "target_inflected": "taśma termobimetalu"
+          "target_inflected": "taśmą termobimetalu"
         },
         {
           "source": "bulk loading",
           "target": "ładowania zbiorczego",
-          "target_inflected": "ładowanie zbiorcze"
+          "target_inflected": "ładowania zbiorczego"
         },
         {
           "source": "DC connector",
@@ -10931,7 +10931,7 @@
         {
           "source": "desulphation charge",
           "target": "ładowaniu odsiarczającym",
-          "target_inflected": "ładowanie odsiarczające"
+          "target_inflected": "ładowaniu odsiarczającym"
         },
         {
           "source": "lead-acid battery",
@@ -11058,12 +11058,12 @@
         {
           "source": "cardan shaft",
           "target": "wał napędowy",
-          "target_inflected": null
+          "target_inflected": "wał napędowy"
         },
         {
           "source": "longitudinal shaft",
           "target": "wał napędowy",
-          "target_inflected": null
+          "target_inflected": "wał napędowy"
         }
       ]
     },
@@ -11075,27 +11075,27 @@
         {
           "source": "4-wheel drive",
           "target": "napęd na cztery koła",
-          "target_inflected": null
+          "target_inflected": "napędem na cztery koła"
         },
         {
           "source": "all-wheel drive",
           "target": "AWD",
-          "target_inflected": null
+          "target_inflected": "AWD"
         },
         {
           "source": "four-wheel drive",
           "target": "napęd na cztery koła",
-          "target_inflected": null
+          "target_inflected": "napędem na cztery koła"
         },
         {
           "source": "front wheel drive",
           "target": "napęd przedni",
-          "target_inflected": null
+          "target_inflected": "napędem przednim"
         },
         {
           "source": "rear-wheel drive",
           "target": "napęd na tylne koła",
-          "target_inflected": null
+          "target_inflected": "napędem na tylne koła"
         }
       ]
     },
@@ -11107,22 +11107,22 @@
         {
           "source": "cardan joint",
           "target": "przegub Cardana",
-          "target_inflected": null
+          "target_inflected": "przegub Cardana"
         },
         {
           "source": "u-joint",
           "target": "przegub Cardana",
-          "target_inflected": null
+          "target_inflected": "przegub Cardana"
         },
         {
           "source": "universal coupling",
           "target": "przegub Cardana",
-          "target_inflected": null
+          "target_inflected": "przegub Cardana"
         },
         {
           "source": "universal joint",
           "target": "przegub Cardana",
-          "target_inflected": null
+          "target_inflected": "przegub Cardana"
         }
       ]
     },
@@ -11175,22 +11175,22 @@
         {
           "source": "hub assembly",
           "target": "piasta",
-          "target_inflected": null
+          "target_inflected": "piasty"
         },
         {
           "source": "wheel hub assembly",
           "target": "piasta",
-          "target_inflected": null
+          "target_inflected": "piasty"
         },
         {
           "source": "wheel hub bearing",
           "target": "piasta",
-          "target_inflected": null
+          "target_inflected": "piasty"
         },
         {
           "source": "wheel hub unit",
           "target": "piasta",
-          "target_inflected": null
+          "target_inflected": "piasty"
         }
       ]
     },
@@ -11202,12 +11202,12 @@
         {
           "source": "portal axle",
           "target": "zwolnica",
-          "target_inflected": null
+          "target_inflected": "zwolnica"
         },
         {
           "source": "portal gear lift",
           "target": "zwolnica",
-          "target_inflected": null
+          "target_inflected": "zwolnica"
         }
       ]
     },
@@ -11557,7 +11557,7 @@
         {
           "source": "set of coilovers",
           "target": "zawieszenie gwintowane",
-          "target_inflected": "zawieszenia gwintowanego"
+          "target_inflected": "zawieszenia gwintownego"
         }
       ]
     },
@@ -11678,12 +11678,12 @@
         {
           "source": "charge air cooler",
           "target": "chłodnica powietrza doładowanego",
-          "target_inflected": null
+          "target_inflected": "chłodnica powietrza doładowanego"
         },
         {
           "source": "intercooler",
           "target": "chłodnica powietrza doładowanego",
-          "target_inflected": null
+          "target_inflected": "chłodnica powietrza doładowanego"
         }
       ]
     },
@@ -11797,12 +11797,12 @@
         {
           "source": "inlet manifold",
           "target": "kolektor dolotowy",
-          "target_inflected": null
+          "target_inflected": "kolektor dolotowy"
         },
         {
           "source": "intake manifold",
           "target": "kolektor dolotowy",
-          "target_inflected": null
+          "target_inflected": "kolektor dolotowy"
         }
       ]
     },
