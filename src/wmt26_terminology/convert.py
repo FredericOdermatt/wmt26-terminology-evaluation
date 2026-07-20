@@ -26,7 +26,7 @@ def main() -> None:
     for ts in laniqo.convert(ORIGINAL) + hkma.convert(ORIGINAL) + vicomtech.convert(ORIGINAL):
         _assert_matches_release(ts)
         out = UNIFIED_PRIVATE / f"{ts.provider}.{ts.domain}.{ts.pair}.track{ts.track}.json"
-        out.write_text(ts.model_dump_json(indent=2), encoding="utf-8")
+        out.write_text(ts.model_dump_json(indent=2, exclude_defaults=True), encoding="utf-8")
         print(f"verified against release, wrote {out}")
 
 
