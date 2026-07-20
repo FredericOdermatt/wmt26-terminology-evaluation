@@ -135,12 +135,15 @@ class _SegData(NamedTuple):
     eu_clean: dict[int, str]
 
 
-def _reference_for(paragraph: str, segs: _SegData, span: tuple[int, int]) -> str:
+def _reference_for(paragraph: str, segs: _SegData, span: tuple[int, int]) -> str | None:
     """Mirror onto the eu side whichever spacing transform reproduces the
-    released es paragraph; the release mixes raw and detokenized spacing."""
+    released es paragraph; the release mixes raw and detokenized spacing.
+    None when the span has no eu text at all (railways seg 1741)."""
     start, end = span
     es_joined = " ".join(segs.es_clean[start : end + 1])
     eu_joined = " ".join(segs.eu_clean[i] for i in range(start, end + 1) if i in segs.eu_clean)
+    if not eu_joined:
+        return None
     if es_joined == paragraph:
         return eu_joined
     return _detok(eu_joined)
