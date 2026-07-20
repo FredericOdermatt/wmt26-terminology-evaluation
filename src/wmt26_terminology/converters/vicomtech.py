@@ -178,10 +178,22 @@ def _build_documents(domain: str, released_docs: list[str], segs: _SegData) -> l
     return documents
 
 
-def _load_glossary(path: Path) -> Glossary:
+def _load_glossary(path: Path, documents: list[Document]) -> Glossary:
+    """The released glossary and the inline annotations disagree on target
+    alternatives (reports/vicomtech-data-issues.csv, issue 3); annotation-
+    attested renditions are added as private-side enrichment."""
     released_terms = json.loads(path.read_text(encoding="utf-8"))
+    observed: dict[str, set[str]] = {}
+    for doc in documents:
+        for paragraph in doc.paragraphs:
+            for segment in paragraph.segments:
+                for term in segment.terms:
+                    observed.setdefault(term.source, set()).add(term.target)
     return Glossary(
-        proper=[TermEntry(source=src, targets=tgts) for src, tgts in released_terms["proper"].items()],
+        proper=[
+            TermEntry(source=src, targets=tgts, targets_extra=sorted(observed.get(src, set()) - set(tgts)))
+            for src, tgts in released_terms["proper"].items()
+        ],
         random=[TermEntry(source=src, targets=tgts) for src, tgts in released_terms["random"].items()],
     )
 
@@ -211,7 +223,7 @@ def _convert_domain(domain: str, track: int, original_root: Path) -> TestSet:
         target_lang="eu",
         paragraph_delimiter="\n",
         documents=documents,
-        glossary=_load_glossary(public / f"terms.{domain}.eseu.json") if track == 1 else None,
+        glossary=_load_glossary(public / f"terms.{domain}.eseu.json", documents) if track == 1 else None,
         samples=_load_samples(public / f"sample.{domain}.eseu.json") if track != 1 else None,
     )
 

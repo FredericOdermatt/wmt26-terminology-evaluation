@@ -29,7 +29,7 @@ class TermScores(BaseModel):
 def _glossary_alternatives(test_set: TestSet) -> dict[str, list[str]]:
     if test_set.glossary is None:
         return {}
-    return {normalize(entry.match_source): entry.targets for entry in test_set.glossary.proper}
+    return {normalize(entry.match_source): entry.targets + entry.targets_extra for entry in test_set.glossary.proper}
 
 
 def _base_forms(term_source: str, term_target: str, alternatives: dict[str, list[str]]) -> set[str]:
