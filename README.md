@@ -12,5 +12,12 @@ document-level MT with terminology guidance for en→pl, es→eu, and zh→en.
 
 ```bash
 make install
-make convert-datasets
+make convert-datasets                    # build data/unified/ from data/original/, verified against the release
+make evaluate SUBMISSIONS=path/to/dir    # score {system}.{mode}.{domain}.{pair}.json files
+make evaluate-oracle                     # score the references against themselves (pipeline self-check)
 ```
+
+Evaluation reports document- and paragraph-level chrF++ plus term success rates
+(base / inflection / lemma tiers and exclusive maximal matching; see
+docs/term-matching.md). Pass `--skip-lemma` to `wmt26_terminology.evaluate` to
+skip the stanza lemma tier.
