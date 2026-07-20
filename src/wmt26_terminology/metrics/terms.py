@@ -13,12 +13,15 @@ if TYPE_CHECKING:
 
 class TermScores(BaseModel):
     """Rates over annotated term occurrences, matched word-boundary-anchored in
-    the expected paragraph. The first four tiers judge occurrences
-    independently; `exclusive_match` requires pairwise disjoint spans (maximal
-    matching over base, inflection, and lemma candidates) and is the primary
-    score."""
+    the expected paragraph. `inflection_match` is conditional: its denominator
+    is `occurrences_with_inflection`, since occurrences without a gold surface
+    form are untestable in that tier, not failed. All other tiers share the
+    full `occurrences` denominator; `exclusive_match` requires pairwise
+    disjoint spans (maximal matching over base, inflection, and lemma
+    candidates) and is the primary score."""
 
     occurrences: int
+    occurrences_with_inflection: int
     base_match: float
     inflection_match: float
     lemma_match: float
@@ -68,6 +71,7 @@ def _score_paragraph(
     for segment in paragraph.segments:
         for term in segment.terms:
             counts["occurrences"] += 1
+            counts["with_inflection"] += bool(term.target_inflected)
             base_forms = _base_forms(term.source, term.target, alternatives)
             base_spans = [mask for form in base_forms for mask in space.surface_masks(form)]
             inflection_spans = space.surface_masks(normalize(term.target_inflected)) if term.target_inflected else []
@@ -97,8 +101,9 @@ def term_success(test_set: TestSet, submission: Submission, lemmatizer: "Lemmati
         return None
     return TermScores(
         occurrences=total,
+        occurrences_with_inflection=counts["with_inflection"],
         base_match=counts["base"] / total,
-        inflection_match=counts["inflection"] / total,
+        inflection_match=counts["inflection"] / counts["with_inflection"] if counts["with_inflection"] else 0.0,
         lemma_match=counts["lemma"] / total,
         base_or_inflection_match=counts["either_surface"] / total,
         exclusive_match=counts["exclusive"] / total,
