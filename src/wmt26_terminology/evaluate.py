@@ -73,7 +73,8 @@ def _format_row(r: EvaluationResult) -> str:
         t = r.terms
         terms = (
             f"{t.base_match:6.1%} {t.inflection_match:9.1%} {t.lemma_match:6.1%} "
-            f"{t.base_or_inflection_match:8.1%} {t.exclusive_match:8.1%} n={t.occurrences}"
+            f"{t.base_or_inflection_match:8.1%} {t.exclusive_match:8.1%} "
+            f"n={t.occurrences} (infl {t.occurrences_with_inflection})"
         )
     test_set = f"{r.pair} t{r.track} {r.domain}"
     return f"{test_set:<33} {r.system:<10} {r.mode:<8} {r.document_chrf:6.2f} {r.paragraph_chrf:6.2f}  {terms}"
