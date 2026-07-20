@@ -5,6 +5,7 @@ requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2.7",
     "sacrebleu>=2.6.0",
+    "stanza>=1.14.0",
 ]
 
 [dependency-groups]
