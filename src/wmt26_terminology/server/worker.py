@@ -7,6 +7,8 @@ from wmt26_terminology.metrics.lemma import Lemmatizer
 from wmt26_terminology.metrics.submission import Submission
 from wmt26_terminology.metrics.terms import term_success
 from wmt26_terminology.schema import TestSet
+from wmt26_terminology.server.config import settings
+from wmt26_terminology.server.judge import judge_submission
 from wmt26_terminology.server.pb import PocketBase
 from wmt26_terminology.server.submissions import TRACK_MODES
 
@@ -95,6 +97,12 @@ class Evaluator:
         lemma_units = [(ts, mode) for ts, mode in units if ts.target_lang in {"pl", "eu"}]
         total = len(units) + _LEMMA_WEIGHT * len(lemma_units)
         done = 0
+        # Network-bound, so it runs concurrently with the CPU-bound stages.
+        judge_task = (
+            asyncio.create_task(self._judge_all(system_id, units, submissions))
+            if settings.judge_enabled and settings.openrouter_api_key
+            else None
+        )
 
         async def progress(stage: str) -> None:
             await self._pb.update(
@@ -126,14 +134,23 @@ class Evaluator:
             del lemmatizer
             gc.collect()
 
-        # Judge stage (LLM as a judge via OpenRouter) is prepared but disabled:
-        # if settings.judge_enabled:
-        #     from wmt26_terminology.server.judge import judge_submission
-        #     for test_set, mode in units:
-        #         verdicts = await judge_submission(test_set, submissions[(mode, test_set.domain, test_set.pair)])
-        #         await self._upsert_score(system_id, test_set, mode, {"judge": verdicts})
+        if judge_task is not None and not judge_task.done():
+            await self._pb.update("evaluations", evaluation_id, {"status": "RUNNING", "stage": "judge", "percentage": 95})
+        if judge_task is not None:
+            await judge_task
 
         await self._pb.update("evaluations", evaluation_id, {"status": "DONE", "percentage": 100, "stage": "done"})
+
+    async def _judge_all(
+        self, system_id: str, units: list[tuple[TestSet, str]], submissions: dict[tuple[str, str, str], Submission]
+    ) -> None:
+        for test_set, mode in units:
+            submission = submissions[mode, test_set.domain, test_set.pair]
+            try:
+                verdict = await judge_submission(test_set, submission, mode)
+            except Exception as error:
+                verdict = {"model": None, "mean": None, "error": str(error)[:300]}
+            await self._upsert_score(system_id, test_set, mode, {"judge": verdict})
 
     @staticmethod
     def _exact_metrics(test_set: TestSet, submission: Submission) -> dict:
