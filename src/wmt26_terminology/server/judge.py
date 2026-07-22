@@ -12,8 +12,11 @@ _MODEL = "google/gemma-4-31b-it"
 # Pinned provider for reproducible scoring; bf16 to avoid quantization drift.
 _PROVIDER = {"order": ["wandb"], "allow_fallbacks": False, "quantizations": ["bf16"]}
 _CONCURRENCY = 8
-_MAX_TOKENS = 2000
-_SCORE_RE = re.compile(r"(\d{1,3}(?:\.\d+)?)\s*$")
+# Shared budget for reasoning + answer; too small a budget truncates the
+# reasoning and the score line never arrives.
+_MAX_TOKENS = 4000
+_MAX_SCORE = 100
+_NUMBER_RE = re.compile(r"(\d{1,3}(?:\.\d+)?)")
 
 _PROMPT = """A system was asked to translate the following document from {source_lang} to {target_lang}.
 
@@ -50,14 +53,19 @@ def _dict_section(test_set: TestSet, mode: str) -> str:
 
 
 def _parse_score(text: str) -> float | None:
-    match = _SCORE_RE.search(text.strip())
-    if not match:
+    """The score is the last number on the last non-empty line, tolerating
+    trailing punctuation or wrapping like 'Score: 87.' or '**87/100**'."""
+    lines = [line for line in text.strip().splitlines() if line.strip()]
+    if not lines:
         return None
-    score = float(match.group(1))
-    return score if 0 <= score <= 100 else None
+    numbers = _NUMBER_RE.findall(lines[-1].replace("/100", ""))
+    if not numbers:
+        return None
+    score = float(numbers[-1])
+    return score if 0 <= score <= _MAX_SCORE else None
 
 
-async def _judge_document(client: httpx.AsyncClient, prompt: str) -> float | None:
+async def _judge_document(client: httpx.AsyncClient, prompt: str) -> tuple[float | None, str]:
     payload = {
         "model": _MODEL,
         "provider": _PROVIDER,
@@ -76,13 +84,13 @@ async def _judge_document(client: httpx.AsyncClient, prompt: str) -> float | Non
                 json=payload,
             )
             response.raise_for_status()
-            content = response.json()["choices"][0]["message"]["content"]
-            return _parse_score(content)
-        except (httpx.HTTPError, KeyError, IndexError):
+            content = response.json()["choices"][0]["message"]["content"] or ""
+            return _parse_score(content), content
+        except (httpx.HTTPError, KeyError, IndexError) as error:
             if attempt == 1:
-                return None
+                return None, f"request failed: {error}"
             await asyncio.sleep(3)
-    return None
+    return None, "request failed"
 
 
 async def judge_submission(test_set: TestSet, submission: Submission, mode: str) -> dict:
@@ -104,18 +112,21 @@ async def judge_submission(test_set: TestSet, submission: Submission, mode: str)
     semaphore = asyncio.Semaphore(_CONCURRENCY)
     async with httpx.AsyncClient(timeout=180.0) as client:
 
-        async def bounded(prompt: str) -> float | None:
+        async def bounded(prompt: str) -> tuple[float | None, str]:
             async with semaphore:
                 return await _judge_document(client, prompt)
 
         results = await asyncio.gather(*(bounded(prompt) for prompt in prompts))
-    scores = [score for score in results if score is not None]
+    scores = [score for score, _ in results if score is not None]
+    failures = [content for score, content in results if score is None]
     return {
         "model": _MODEL,
         "provider": "wandb/bf16",
         "reasoning": True,
         "seed": 42,
         "mean": round(sum(scores) / len(scores), 2) if scores else None,
-        "documents": results,
-        "n_failed": sum(1 for score in results if score is None),
+        "documents": [score for score, _ in results],
+        "n_failed": len(failures),
+        # First unparseable reply, kept for debugging prompt/parsing issues.
+        "failure_sample": failures[0][-400:] if failures else None,
     }
