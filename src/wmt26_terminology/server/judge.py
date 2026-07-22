@@ -14,7 +14,7 @@ _PROVIDER = {"order": ["wandb"], "allow_fallbacks": False, "quantizations": ["bf
 _CONCURRENCY = 8
 # Shared budget for reasoning + answer; too small a budget truncates the
 # reasoning and the score line never arrives.
-_MAX_TOKENS = 4000
+_MAX_TOKENS = 8000
 _MAX_SCORE = 100
 _NUMBER_RE = re.compile(r"(\d{1,3}(?:\.\d+)?)")
 
@@ -30,7 +30,8 @@ It produced the following translation:
 {hypothesis}
 ```
 
-Reason briefly about the quality of the translation and its terminology usage, then score.
+Reason briefly about the quality of the translation and its terminology usage. Keep your
+reasoning short, a few sentences at most. Then score.
 Your final line must contain only a single number from 0 to 100, where 0 is given for poor
 translations that make no or wrong use of the terminology and 100 is the best score, for
 translations that translate perfectly using the given terminology."""
