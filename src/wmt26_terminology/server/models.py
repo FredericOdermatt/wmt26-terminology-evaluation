@@ -61,6 +61,7 @@ class LeaderboardRow(BaseModel):
     chrf_para: float | None = None
     exact_term_success: float | None = None
     lemma_term_success: float | None = None
+    judge_score: float | None = None
     sets_scored: int
 
 

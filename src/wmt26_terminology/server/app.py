@@ -277,6 +277,7 @@ async def leaderboard(request: Request) -> list[LeaderboardRow]:
     for (system_id, track, mode), metrics in sorted(rows.items()):
         exact = [m["exact"]["exclusive_match"] for m in metrics if m.get("exact")]
         lemma = [m["lemma"]["exclusive_match"] for m in metrics if m.get("lemma")]
+        judge = [m["judge"]["mean"] for m in metrics if m.get("judge", {}).get("mean") is not None]
         result.append(
             LeaderboardRow(
                 system=systems[system_id]["name"],
@@ -286,6 +287,7 @@ async def leaderboard(request: Request) -> list[LeaderboardRow]:
                 chrf_para=_mean([m["chrf_para"] for m in metrics if "chrf_para" in m]),
                 exact_term_success=_mean(exact),
                 lemma_term_success=_mean(lemma),
+                judge_score=_mean(judge),
                 sets_scored=len(metrics),
             )
         )
