@@ -27,12 +27,14 @@ class LemmaView:
 
 
 class Lemmatizer:
-    def __init__(self, lang: str) -> None:
+    def __init__(self, lang: str, use_gpu: bool | None = None) -> None:
+        kwargs = {} if use_gpu is None else {"use_gpu": use_gpu}
         self._nlp = stanza.Pipeline(
             lang,
             processors="tokenize,pos,lemma",
             verbose=False,
             download_method=stanza.DownloadMethod.REUSE_RESOURCES,
+            **kwargs,
         )
         self._phrase_cache: dict[str, str] = {}
 
