@@ -51,8 +51,8 @@ def _lemmatizer_for(test_set: TestSet, cache: dict, skip: bool) -> Lemmatizer | 
     return cache[test_set.target_lang]
 
 
-def load_test_sets() -> list[TestSet]:
-    return [TestSet.model_validate_json(p.read_text(encoding="utf-8")) for p in sorted(UNIFIED_PRIVATE.glob("*.json"))]
+def load_test_sets(directory: Path = UNIFIED_PRIVATE) -> list[TestSet]:
+    return [TestSet.model_validate_json(p.read_text(encoding="utf-8")) for p in sorted(directory.glob("*.json"))]
 
 
 def oracle_submission(test_set: TestSet) -> Submission:
