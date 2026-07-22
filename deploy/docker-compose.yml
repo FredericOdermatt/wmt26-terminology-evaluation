@@ -1,0 +1,65 @@
+services:
+  traefik:
+    image: traefik:v3.3
+    restart: unless-stopped
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+
+  web:
+    build:
+      context: ../src/frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8000
+      PUBLIC_TURNSTILE_SITEKEY: ${TURNSTILE_SITEKEY:-}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.web.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.web.entrypoints=websecure
+      - traefik.http.routers.web.tls.certresolver=letsencrypt
+      - traefik.http.services.web.loadbalancer.server.port=3000
+
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/backend.Dockerfile
+    restart: unless-stopped
+    environment:
+      WMT26_PB_URL: http://pocketbase:8090
+      WMT26_PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL}
+      WMT26_PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD}
+      WMT26_TURNSTILE_SECRET: ${TURNSTILE_SECRET:-}
+      WMT26_UNIFIED_DATA_DIR: /app/data/unified/private
+    volumes:
+      # Gold data is synced to the host separately and never baked into the image.
+      - ../data:/app/data:ro
+
+  pocketbase:
+    build:
+      context: .
+      dockerfile: pocketbase/Dockerfile
+    restart: unless-stopped
+    environment:
+      PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL}
+      PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD}
+    volumes:
+      - pb_data:/pb/pb_data
+    # Admin UI stays unexposed; reach it via SSH tunnel to the host if needed.
+
+volumes:
+  letsencrypt:
+  pb_data:
