@@ -146,7 +146,9 @@ class Evaluator:
 
     @staticmethod
     def _make_lemmatizer(lang: str) -> Lemmatizer:
-        return Lemmatizer(lang)
+        # The service targets CPU-only nodes; pinning also keeps scores
+        # independent of whatever GPU happens to be present.
+        return Lemmatizer(lang, use_gpu=False)
 
     @staticmethod
     def _lemma_metrics(test_set: TestSet, submission: Submission, lemmatizer: Lemmatizer) -> dict:
