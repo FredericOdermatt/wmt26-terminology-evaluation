@@ -20,6 +20,7 @@ services:
       - letsencrypt:/letsencrypt
 
   web:
+    image: wmt26-web
     build:
       context: ../src/frontend
     restart: unless-stopped
@@ -34,6 +35,7 @@ services:
       - traefik.http.services.web.loadbalancer.server.port=3000
 
   backend:
+    image: wmt26-backend
     build:
       context: ..
       dockerfile: deploy/backend.Dockerfile
@@ -49,6 +51,7 @@ services:
       - ../data:/app/data:ro
 
   pocketbase:
+    image: wmt26-pocketbase
     build:
       context: .
       dockerfile: pocketbase/Dockerfile
