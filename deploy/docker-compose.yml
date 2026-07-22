@@ -24,6 +24,8 @@ services:
     build:
       context: ../src/frontend
     restart: unless-stopped
+    depends_on:
+      - backend
     environment:
       BACKEND_URL: http://backend:8000
       PUBLIC_TURNSTILE_SITEKEY: ${TURNSTILE_SITEKEY:-}
@@ -40,6 +42,9 @@ services:
       context: ..
       dockerfile: deploy/backend.Dockerfile
     restart: unless-stopped
+    depends_on:
+      pocketbase:
+        condition: service_healthy
     environment:
       WMT26_PB_URL: http://pocketbase:8090
       WMT26_PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL}
@@ -61,6 +66,11 @@ services:
       PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD}
     volumes:
       - pb_data:/pb/pb_data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8090/api/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
     # Admin UI stays unexposed; reach it via SSH tunnel to the host if needed.
 
 volumes:
