@@ -4,7 +4,6 @@
 
   let { data } = $props();
   let dialog = $state(null);
-  let name = $state("");
   let email = $state("");
   let website = $state("");
   let creating = $state(false);
@@ -22,7 +21,7 @@
     const response = await fetch("/api/v1/systems", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ name, email, website, turnstile_token: turnstileToken }),
+      body: JSON.stringify({ email, website, turnstile_token: turnstileToken }),
     });
     const body = await response.json();
     creating = false;
@@ -101,17 +100,11 @@
 <dialog class="modal" bind:this={dialog}>
   <div class="modal-box">
     <h3 class="mb-4 text-lg font-bold">Add your system</h3>
+    <p class="mb-3 text-sm opacity-70">
+      Your system name is read automatically from your first uploaded file
+      (<code>{"{system}"}.{"{mode}"}.{"{domain}"}.{"{direction}"}.json</code>).
+    </p>
     <form onsubmit={createSystem} class="flex flex-col gap-3">
-      <label class="form-control">
-        <span class="label-text mb-1">System name (used in your file names)</span>
-        <input
-          class="input input-bordered"
-          bind:value={name}
-          required
-          pattern="[A-Za-z0-9_-]{'{'}3,32{'}'}"
-          placeholder="my-system"
-        />
-      </label>
       <label class="form-control">
         <span class="label-text mb-1">Contact email</span>
         <input class="input input-bordered" type="email" bind:value={email} required />
