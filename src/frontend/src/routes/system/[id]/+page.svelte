@@ -77,8 +77,8 @@
   <h1 class="mb-1 text-2xl font-bold">{system.pending ? "New system" : system.name}</h1>
   {#if system.pending}
     <p class="mb-6 text-sm opacity-70">
-      Upload your files named <code>{"{system}"}.{"{mode}"}.{"{domain}"}.{"{direction}"}.json</code> —
-      your system name is read from the first file. Files are validated immediately;
+      Upload your files named <code>{"{system}"}.{"{mode}"}.{"{domain}"}.{"{direction}"}.json</code>;
+      your system name is read from the first file. Files are validated immediately and
       scoring starts once a track is complete.
     </p>
   {:else}
@@ -106,7 +106,7 @@
       onchange={(e) => uploadFiles([...e.target.files])}
     />
     <span class="text-sm opacity-70">
-      {uploading ? "Uploading…" : "Drop your .json files here or click to select"}
+      {uploading ? "Uploading..." : "Drop your .json files here or click to select"}
     </span>
   </label>
 
@@ -122,7 +122,11 @@
     <div class="card mb-8 bg-base-100 shadow-sm">
       <div class="card-body">
         <div class="flex items-center justify-between">
-          <h2 class="card-title">Track {track}</h2>
+          <h2 class="card-title">
+            {track === 1
+              ? "Track №1: Document-Level Translation with Explicit Dictionary"
+              : "Track №2: Document-Level Translation with Sample Bitexts"}
+          </h2>
           <span class="text-sm opacity-70">
             {slots.filter((s) => s.status === "valid").length}/{slots.length} files
           </span>
@@ -138,7 +142,7 @@
               </svg>
               <progress class="progress progress-primary w-48" value={evaluation.percentage} max="100"></progress>
               <span class="opacity-70">
-                {evaluation.percentage}% ({evaluation.stage}) — ~{etaMinutes(evaluation.percentage)} min remaining
+                {evaluation.percentage}% ({evaluation.stage}), ~{etaMinutes(evaluation.percentage)} min remaining
               </span>
             {:else if evaluation.status === "FAILED"}
               <span class="opacity-70">{evaluation.error}</span>
@@ -146,7 +150,7 @@
           </div>
           {#if evaluation.status === "RUNNING" || evaluation.status === "QUEUED"}
             <p class="mb-2 text-xs opacity-60">
-              Scoring runs on the server — you can close this page and come back later.
+              Scoring runs on the server. You can close this page and come back later.
             </p>
           {/if}
         {/if}

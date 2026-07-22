@@ -52,9 +52,7 @@
 <div class="mb-8 flex items-center justify-between">
   <div>
     <h1 class="text-2xl font-bold">Leaderboard</h1>
-    <p class="text-sm opacity-70">
-      Document-level MT with terminology guidance — en→pl, es→eu, zh→en
-    </p>
+    <p class="text-sm opacity-70">Document-level MT with terminology guidance</p>
   </div>
   <button class="btn btn-primary" onclick={() => dialog?.showModal()}>Add your system</button>
 </div>
@@ -62,7 +60,12 @@
 {#each trackRows as { track, rows } (track)}
   <div class="card mb-8 bg-base-100 shadow-sm">
     <div class="card-body">
-      <h2 class="card-title">Track {track} — {track === 1 ? "dictionaries (proper mode)" : "sample sentences (sample mode)"}</h2>
+      <h2 class="card-title">
+        {track === 1
+          ? "Track №1: Document-Level Translation with Explicit Dictionary"
+          : "Track №2: Document-Level Translation with Sample Bitexts"}
+      </h2>
+      <p class="text-xs opacity-60">scored on the {track === 1 ? "proper" : "sample"} mode translations</p>
       {#if rows.length === 0}
         <p class="text-sm opacity-60">No scored systems yet.</p>
       {:else}
@@ -75,18 +78,16 @@
                 <th>chrF++ (para)</th>
                 <th>Exact Term Success</th>
                 <th>Lemmatized Term Success</th>
-                <th>sets</th>
               </tr>
             </thead>
             <tbody>
               {#each rows.toSorted((a, b) => (b.lemma_term_success ?? b.exact_term_success ?? 0) - (a.lemma_term_success ?? a.exact_term_success ?? 0)) as row (row.system)}
                 <tr>
                   <td class="font-medium">{row.system}</td>
-                  <td>{row.chrf_doc ?? "…"}</td>
-                  <td>{row.chrf_para ?? "…"}</td>
-                  <td>{row.exact_term_success != null ? (row.exact_term_success * 100).toFixed(1) + "%" : "…"}</td>
-                  <td>{row.lemma_term_success != null ? (row.lemma_term_success * 100).toFixed(1) + "%" : "…"}</td>
-                  <td>{row.sets_scored}</td>
+                  <td>{row.chrf_doc ?? "-"}</td>
+                  <td>{row.chrf_para ?? "-"}</td>
+                  <td>{row.exact_term_success != null ? (row.exact_term_success * 100).toFixed(1) + "%" : "-"}</td>
+                  <td>{row.lemma_term_success != null ? (row.lemma_term_success * 100).toFixed(1) + "%" : "-"}</td>
                 </tr>
               {/each}
             </tbody>
@@ -119,7 +120,7 @@
       <div class="modal-action">
         <button type="button" class="btn btn-ghost" onclick={() => dialog?.close()}>Cancel</button>
         <button type="submit" class="btn btn-primary" disabled={creating}>
-          {creating ? "Creating…" : "Create"}
+          {creating ? "Creating..." : "Create"}
         </button>
       </div>
     </form>
