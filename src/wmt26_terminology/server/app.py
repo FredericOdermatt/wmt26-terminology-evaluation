@@ -2,6 +2,7 @@ import asyncio
 import hashlib
 import io
 import json
+import re
 import secrets
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -30,6 +31,8 @@ from wmt26_terminology.server.submissions import ParsedUpload, UploadError, expe
 from wmt26_terminology.server.worker import Evaluator
 
 _bearer = HTTPBearer()
+_NAME_PATTERN = re.compile(r"^[A-Za-z0-9_-]{3,32}$")
+_PENDING_PREFIX = "pending-"
 
 
 def _hash(token: str) -> str:
@@ -86,6 +89,8 @@ async def _authed_system(
 
 async def _system_view(request: Request, system: dict) -> SystemView:
     pb: PocketBase = request.app.state.pb
+    pending = system["name"].startswith(_PENDING_PREFIX)
+    display_name = "{system}" if pending else system["name"]  # ruff:ignore[missing-f-string-syntax] - literal placeholder shown to the user
     files = await pb.list("submission_files", f'system = "{system["id"]}"')
     by_slot = {(f["track"], f["mode"], f["domain"], f["direction"]): f for f in files}
     slots = []
@@ -98,7 +103,7 @@ async def _system_view(request: Request, system: dict) -> SystemView:
                 mode=slot.mode,
                 domain=slot.domain,
                 direction=slot.direction,
-                expected_filename=f"{system['name']}.{slot.filename_suffix}",
+                expected_filename=f"{display_name}.{slot.filename_suffix}",
                 status=status,
                 error=(record or {}).get("error") or None,
             )
@@ -114,7 +119,13 @@ async def _system_view(request: Request, system: dict) -> SystemView:
         )
         for e in await pb.list("evaluations", f'system = "{system["id"]}"', sort="created")
     ]
-    return SystemView(id=system["id"], name=system["name"], slots=slots, evaluations=evaluations)
+    return SystemView(
+        id=system["id"],
+        name="" if pending else system["name"],
+        pending=pending,
+        slots=slots,
+        evaluations=evaluations,
+    )
 
 
 @app.get("/v1/meta")
@@ -135,11 +146,14 @@ async def create_system(request: Request, body: SystemCreate) -> SystemCreated:
     if not await turnstile.verify(body.turnstile_token, ip):
         raise HTTPException(400, "turnstile verification failed")
     pb: PocketBase = request.app.state.pb
-    if await pb.first("systems", f'name = "{body.name}"'):
-        raise HTTPException(409, f"system name '{body.name}' is already taken")
+    # The system name is inferred from the first uploaded file; until then the
+    # record carries a unique placeholder.
     token = secrets.token_urlsafe(32)
-    record = await pb.create("systems", {"name": body.name, "email": body.email, "token_hash": _hash(token), "blocked": False})
-    return SystemCreated(id=record["id"], name=body.name, token=token)
+    placeholder = f"{_PENDING_PREFIX}{secrets.token_hex(6)}"
+    record = await pb.create(
+        "systems", {"name": placeholder, "email": body.email, "token_hash": _hash(token), "blocked": False}
+    )
+    return SystemCreated(id=record["id"], token=token)
 
 
 @app.get("/v1/systems/{system_id}")
@@ -168,13 +182,25 @@ async def upload_file(
     filename = file.filename or ""
     try:
         parsed = parse_upload(filename, content, request.app.state.test_sets)
-        if parsed.system != system["name"]:
-            raise UploadError(f"file is named for system '{parsed.system}' but you are uploading to '{system['name']}'")
+        system = await _adopt_system_name(request, system, parsed.system)
     except UploadError as upload_error:
         return UploadVerdict(
             filename=filename, accepted=False, error=upload_error.message, system=await _system_view(request, system)
         )
     return await _store_upload(request, system, filename, parsed)
+
+
+async def _adopt_system_name(request: Request, system: dict, name: str) -> dict:
+    if system["name"] == name:
+        return system
+    if not system["name"].startswith(_PENDING_PREFIX):
+        raise UploadError(f"file is named for system '{name}' but you are uploading to '{system['name']}'")
+    if not _NAME_PATTERN.match(name):
+        raise UploadError(f"system name '{name}' (taken from the file name) must match [A-Za-z0-9_-] and be 3-32 characters")
+    pb: PocketBase = request.app.state.pb
+    if await pb.first("systems", f'name = "{name}" && id != "{system["id"]}"'):
+        raise UploadError(f"system name '{name}' is already taken")
+    return await pb.update("systems", system["id"], {"name": name})
 
 
 async def _store_upload(request: Request, system: dict, filename: str, parsed: ParsedUpload) -> UploadVerdict:

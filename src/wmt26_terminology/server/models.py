@@ -2,7 +2,6 @@ from pydantic import BaseModel, Field
 
 
 class SystemCreate(BaseModel):
-    name: str = Field(pattern=r"^[A-Za-z0-9_-]{3,32}$")
     email: str = Field(max_length=200)
     turnstile_token: str = ""
     # Honeypot: real users never fill this hidden field.
@@ -11,7 +10,6 @@ class SystemCreate(BaseModel):
 
 class SystemCreated(BaseModel):
     id: str
-    name: str
     token: str
 
 
@@ -37,6 +35,8 @@ class EvaluationView(BaseModel):
 class SystemView(BaseModel):
     id: str
     name: str
+    # True until the first accepted upload names the system.
+    pending: bool
     slots: list[SlotView]
     evaluations: list[EvaluationView]
 
