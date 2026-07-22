@@ -3,9 +3,14 @@ name = "wmt26-terminology-evaluation"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi>=0.139.2",
+    "httpx>=0.28.1",
     "pydantic>=2.7",
+    "pydantic-settings>=2.14.2",
+    "python-multipart>=0.0.32",
     "sacrebleu>=2.6.0",
     "stanza>=1.14.0",
+    "uvicorn[standard]>=0.51.0",
 ]
 
 [dependency-groups]
