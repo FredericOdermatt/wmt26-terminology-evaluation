@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import io
 import json
@@ -40,9 +41,24 @@ def _client_ip(request: Request) -> str:
     return forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "unknown")
 
 
+_PB_STARTUP_ATTEMPTS = 30
+
+
+async def _wait_for_pocketbase(pb: PocketBase) -> None:
+    for attempt in range(_PB_STARTUP_ATTEMPTS):
+        try:
+            await pb.list("systems", per_page=1)
+            return
+        except Exception:
+            if attempt == _PB_STARTUP_ATTEMPTS - 1:
+                raise
+            await asyncio.sleep(2)
+
+
 @asynccontextmanager
 async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.pb = PocketBase()
+    await _wait_for_pocketbase(app.state.pb)
     app.state.test_sets = load_test_sets(Path(settings.unified_data_dir))
     app.state.slots = expected_slots(app.state.test_sets)
     app.state.evaluator = Evaluator(app.state.pb, app.state.test_sets)
