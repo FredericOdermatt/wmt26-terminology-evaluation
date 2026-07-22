@@ -78,6 +78,7 @@
                 <th>chrF++ (para)</th>
                 <th>Exact Term Success</th>
                 <th>Lemmatized Term Success</th>
+                <th>LLM Judge</th>
               </tr>
             </thead>
             <tbody>
@@ -88,6 +89,7 @@
                   <td>{row.chrf_para ?? "-"}</td>
                   <td>{row.exact_term_success != null ? (row.exact_term_success * 100).toFixed(1) + "%" : "-"}</td>
                   <td>{row.lemma_term_success != null ? (row.lemma_term_success * 100).toFixed(1) + "%" : "-"}</td>
+                  <td>{row.judge_score != null ? row.judge_score.toFixed(1) : "-"}</td>
                 </tr>
               {/each}
             </tbody>
