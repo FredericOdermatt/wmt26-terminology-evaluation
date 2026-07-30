@@ -74,7 +74,14 @@ services:
       interval: 5s
       timeout: 3s
       retries: 12
-    # Admin UI stays unexposed; reach it via SSH tunnel to the host if needed.
+    # Collection rules are superuser-only, so the exposed API serves no data;
+    # the admin UI is protected by the superuser login.
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.db.rule=Host(`${DB_DOMAIN:-db.wmt26.odermatt.dev}`)
+      - traefik.http.routers.db.entrypoints=websecure
+      - traefik.http.routers.db.tls.certresolver=letsencrypt
+      - traefik.http.services.db.loadbalancer.server.port=8090
 
 volumes:
   letsencrypt:
