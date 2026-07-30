@@ -93,7 +93,24 @@ class Evaluator:
         system_id, track = record["system"], record["track"]
         track_sets = [ts for ts in self._test_sets if ts.track == track]
         submissions = await self._load_submissions(system_id, track)
-        units = [(ts, mode) for ts in track_sets for mode in TRACK_MODES[track] if (mode, ts.domain, ts.pair) in submissions]
+        # Only directions with their full slot set uploaded are scored; partial
+        # directions wait for the next evaluation run.
+        complete = {
+            direction
+            for direction in {ts.pair for ts in track_sets}
+            if all(
+                (mode, ts.domain, ts.pair) in submissions
+                for ts in track_sets
+                if ts.pair == direction
+                for mode in TRACK_MODES[track]
+            )
+        }
+        units = [
+            (ts, mode)
+            for ts in track_sets
+            for mode in TRACK_MODES[track]
+            if ts.pair in complete and (mode, ts.domain, ts.pair) in submissions
+        ]
         lemma_units = [(ts, mode) for ts, mode in units if ts.target_lang in {"pl", "eu"}]
         total = len(units) + _LEMMA_WEIGHT * len(lemma_units)
         done = 0

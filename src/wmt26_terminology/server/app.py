@@ -16,9 +16,11 @@ from wmt26_terminology.evaluate import load_test_sets
 from wmt26_terminology.server import turnstile
 from wmt26_terminology.server.config import settings
 from wmt26_terminology.server.models import (
+    EvaluateRequest,
     EvaluationView,
     LeaderboardRow,
     Meta,
+    MetricBlock,
     SlotView,
     SystemCreate,
     SystemCreated,
@@ -128,12 +130,20 @@ async def _system_view(request: Request, system: dict) -> SystemView:
     )
 
 
+def _track_directions(request: Request) -> dict[int, list[str]]:
+    directions: dict[int, list[str]] = {}
+    for slot in request.app.state.slots:
+        if slot.direction not in directions.setdefault(slot.track, []):
+            directions[slot.track].append(slot.direction)
+    return directions
+
+
 @app.get("/v1/meta")
 async def meta(request: Request) -> Meta:
     tracks: dict[int, list[str]] = {}
     for slot in request.app.state.slots:
         tracks.setdefault(slot.track, []).append(slot.filename_suffix)
-    return Meta(tracks=tracks)
+    return Meta(tracks=tracks, track_directions=_track_directions(request))
 
 
 @app.post("/v1/systems")
@@ -229,9 +239,6 @@ async def _store_upload(request: Request, system: dict, filename: str, parsed: P
 
     view = await _system_view(request, system)
     complete = all(s.status == "valid" for s in view.slots if s.track == slot.track)
-    if complete:
-        await request.app.state.evaluator.enqueue(system["id"], slot.track)
-        view = await _system_view(request, system)
     return UploadVerdict(
         filename=filename,
         accepted=True,
@@ -242,6 +249,43 @@ async def _store_upload(request: Request, system: dict, filename: str, parsed: P
         track_complete=complete,
         system=view,
     )
+
+
+@app.post("/v1/systems/{system_id}/evaluate")
+async def start_evaluation(
+    request: Request,
+    system_id: str,
+    body: EvaluateRequest,
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(_bearer)],
+) -> EvaluationView:
+    system = await _authed_system(request, credentials, system_id)
+    if not limiter.allow(f"evaluate:{system_id}", settings.evaluations_per_system_per_day, 86400):
+        raise HTTPException(429, "daily evaluation quota for this system reached")
+    view = await _system_view(request, system)
+    track_slots = [s for s in view.slots if s.track == body.track]
+    if not track_slots:
+        raise HTTPException(400, f"unknown track {body.track}")
+    complete = _complete_directions(track_slots)
+    if not complete:
+        raise HTTPException(400, "no language direction is complete yet; upload all files of at least one direction first")
+    record = await request.app.state.evaluator.enqueue(system_id, body.track)
+    return EvaluationView(
+        id=record["id"],
+        track=record["track"],
+        status=record["status"],
+        stage=record.get("stage", ""),
+        percentage=record.get("percentage", 0),
+        error=record.get("error") or None,
+    )
+
+
+def _complete_directions(track_slots: list[SlotView]) -> list[str]:
+    directions = sorted({slot.direction for slot in track_slots})
+    return [
+        direction
+        for direction in directions
+        if all(slot.status == "valid" for slot in track_slots if slot.direction == direction)
+    ]
 
 
 @app.get("/v1/evaluations/{evaluation_id}")
@@ -260,35 +304,64 @@ async def get_evaluation(request: Request, evaluation_id: str) -> EvaluationView
     )
 
 
+def _mean(values: list[float]) -> float | None:
+    return round(sum(values) / len(values), 3) if values else None
+
+
+def _metric_block(metrics: list[dict]) -> MetricBlock:
+    return MetricBlock(
+        chrf_doc=_mean([m["chrf_doc"] for m in metrics if m.get("chrf_doc") is not None]),
+        chrf_para=_mean([m["chrf_para"] for m in metrics if m.get("chrf_para") is not None]),
+        exact_term_success=_mean([m["exact"]["exclusive_match"] for m in metrics if m.get("exact")]),
+        lemma_term_success=_mean([m["lemma"]["exclusive_match"] for m in metrics if m.get("lemma")]),
+        judge_score=_mean([m["judge"]["mean"] for m in metrics if m.get("judge", {}).get("mean") is not None]),
+    )
+
+
+def _overall(blocks: dict[str, MetricBlock], expected: list[str], term_expected: list[str]) -> MetricBlock:
+    """Overall = mean over directions, per metric only when every direction
+    that can produce the metric has a value (zhen carries no term metrics)."""
+
+    def combine(field: str, directions: list[str]) -> float | None:
+        values = [getattr(blocks[d], field) for d in directions if d in blocks]
+        if len(values) != len(directions) or any(v is None for v in values):
+            return None
+        return _mean(values)
+
+    return MetricBlock(
+        chrf_doc=combine("chrf_doc", expected),
+        chrf_para=combine("chrf_para", expected),
+        exact_term_success=combine("exact_term_success", term_expected),
+        lemma_term_success=combine("lemma_term_success", term_expected),
+        judge_score=combine("judge_score", expected),
+    )
+
+
 @app.get("/v1/leaderboard")
 async def leaderboard(request: Request) -> list[LeaderboardRow]:
     pb: PocketBase = request.app.state.pb
     systems = {s["id"]: s for s in await pb.list("systems", "blocked = false")}
-    rows: dict[tuple[str, int, str], list[dict]] = {}
+    grouped: dict[tuple[str, int, str], dict[str, list[dict]]] = {}
     for score in await pb.list("scores"):
         if score["system"] not in systems:
             continue
-        rows.setdefault((score["system"], score["track"], score["mode"]), []).append(score["metrics"])
+        key = (score["system"], score["track"], score["mode"])
+        grouped.setdefault(key, {}).setdefault(score["direction"], []).append(score["metrics"])
 
-    def _mean(values: list[float]) -> float | None:
-        return round(sum(values) / len(values), 3) if values else None
-
+    term_directions = {
+        track: [d for d in directions if d != "zhen"] for track, directions in _track_directions(request).items()
+    }
     result = []
-    for (system_id, track, mode), metrics in sorted(rows.items()):
-        exact = [m["exact"]["exclusive_match"] for m in metrics if m.get("exact")]
-        lemma = [m["lemma"]["exclusive_match"] for m in metrics if m.get("lemma")]
-        judge = [m["judge"]["mean"] for m in metrics if m.get("judge", {}).get("mean") is not None]
+    for (system_id, track, mode), by_direction in sorted(grouped.items()):
+        blocks = {direction: _metric_block(metrics) for direction, metrics in by_direction.items()}
+        expected = _track_directions(request)[track]
         result.append(
             LeaderboardRow(
                 system=systems[system_id]["name"],
                 track=track,
                 mode=mode,
-                chrf_doc=_mean([m["chrf_doc"] for m in metrics if "chrf_doc" in m]),
-                chrf_para=_mean([m["chrf_para"] for m in metrics if "chrf_para" in m]),
-                exact_term_success=_mean(exact),
-                lemma_term_success=_mean(lemma),
-                judge_score=_mean(judge),
-                sets_scored=len(metrics),
+                directions=blocks,
+                overall=_overall(blocks, expected, term_directions[track]),
             )
         )
     return result
