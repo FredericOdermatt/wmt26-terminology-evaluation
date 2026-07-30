@@ -60,12 +60,36 @@
   // ETA assumes a ~50 min full evaluation, scaled by remaining percentage.
   const etaMinutes = (percentage) => Math.max(1, Math.ceil((50 * (100 - percentage)) / 100));
 
+  let evaluateError = $state("");
+
+  function completeDirections(slots) {
+    const directions = [...new Set(slots.map((slot) => slot.direction))];
+    return directions.filter((direction) =>
+      slots.filter((slot) => slot.direction === direction).every((slot) => slot.status === "valid")
+    );
+  }
+
+  async function startEvaluation(track) {
+    evaluateError = "";
+    const response = await fetch(`/api/v1/systems/${systemId}/evaluate`, {
+      method: "POST",
+      headers: { authorization: `Bearer ${token()}`, "content-type": "application/json" },
+      body: JSON.stringify({ track }),
+    });
+    if (!response.ok) {
+      const body = await response.json();
+      evaluateError = body.detail ?? "could not start evaluation";
+    }
+    await refresh();
+  }
+
   const tracks = $derived(
     system
       ? [1, 2].map((track) => ({
           track,
           slots: system.slots.filter((slot) => slot.track === track),
           evaluation: system.evaluations.findLast((e) => e.track === track),
+          complete: completeDirections(system.slots.filter((slot) => slot.track === track)),
         }))
       : []
   );
@@ -78,13 +102,14 @@
   {#if system.pending}
     <p class="mb-6 text-sm opacity-70">
       Upload your files named <code>{"{system}"}.{"{mode}"}.{"{domain}"}.{"{direction}"}.json</code>;
-      your system name is read from the first file. Files are validated immediately and
-      scoring starts once a track is complete.
+      your system name is read from the first file. Files are validated immediately; you can
+      start the evaluation once all files of at least one language direction are uploaded.
     </p>
   {:else}
     <p class="mb-6 text-sm opacity-70">
       Upload your files named <code>{system.name}.{"{mode}"}.{"{domain}"}.{"{direction}"}.json</code>.
-      Files are validated immediately; scoring starts once a track is complete.
+      Files are validated immediately; you can start the evaluation once all files of at
+      least one language direction are uploaded.
     </p>
   {/if}
 
@@ -118,7 +143,7 @@
     </div>
   {/if}
 
-  {#each tracks as { track, slots, evaluation } (track)}
+  {#each tracks as { track, slots, evaluation, complete } (track)}
     <div class="card mb-8 bg-base-100 shadow-sm">
       <div class="card-body">
         <div class="flex items-center justify-between">
@@ -131,6 +156,22 @@
             {slots.filter((s) => s.status === "valid").length}/{slots.length} files
           </span>
         </div>
+        {#if complete.length > 0 && !(evaluation && (evaluation.status === "QUEUED" || evaluation.status === "RUNNING"))}
+          <div class="mb-2">
+            <button
+              class="btn border-none text-white"
+              style="background-color: #7c3aed"
+              onclick={() => startEvaluation(track)}
+            >
+              {complete.length === new Set(slots.map((slot) => slot.direction)).size
+                ? "Start Evaluation"
+                : `Evaluate only subset: ${complete.join(", ")}`}
+            </button>
+          </div>
+        {/if}
+        {#if evaluateError}
+          <div class="alert alert-error mb-2 text-sm">{evaluateError}</div>
+        {/if}
         {#if evaluation}
           <div class="mb-2 flex items-center gap-3 text-sm">
             <span class="badge {evaluation.status === 'DONE' ? 'badge-success' : evaluation.status === 'FAILED' ? 'badge-error' : 'badge-info'}">
