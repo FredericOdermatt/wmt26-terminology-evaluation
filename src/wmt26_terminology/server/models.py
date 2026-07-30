@@ -53,17 +53,28 @@ class UploadVerdict(BaseModel):
     system: SystemView
 
 
-class LeaderboardRow(BaseModel):
-    system: str
-    track: int
-    mode: str
+class MetricBlock(BaseModel):
     chrf_doc: float | None = None
     chrf_para: float | None = None
     exact_term_success: float | None = None
     lemma_term_success: float | None = None
     judge_score: float | None = None
-    sets_scored: int
+
+
+class LeaderboardRow(BaseModel):
+    system: str
+    track: int
+    mode: str
+    directions: dict[str, MetricBlock]
+    # Per metric, filled only when every direction that can produce the metric
+    # has a value; otherwise the leaderboard shows per-direction values only.
+    overall: MetricBlock
+
+
+class EvaluateRequest(BaseModel):
+    track: int
 
 
 class Meta(BaseModel):
     tracks: dict[int, list[str]]  # track -> expected {mode}.{domain}.{direction} suffixes
+    track_directions: dict[int, list[str]]

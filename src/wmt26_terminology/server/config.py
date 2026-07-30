@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     systems_per_ip_per_hour: int = 3
     uploads_per_ip_per_minute: int = 20
     uploads_per_system_per_day: int = 60
+    evaluations_per_system_per_day: int = 8
     judge_enabled: bool = True
     openrouter_api_key: str = ""
 
