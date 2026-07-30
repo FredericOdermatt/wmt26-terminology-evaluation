@@ -33,9 +33,28 @@
     goto(`/system/${body.id}`);
   }
 
+  const metrics = [
+    { key: "chrf_doc", label: "chrF++ (doc)", format: (v) => v.toFixed(1) },
+    { key: "chrf_para", label: "chrF++ (para)", format: (v) => v.toFixed(1) },
+    { key: "exact_term_success", label: "Exact Term Success", format: (v) => (v * 100).toFixed(1) + "%" },
+    { key: "lemma_term_success", label: "Lemmatized Term Success", format: (v) => (v * 100).toFixed(1) + "%" },
+    { key: "judge_score", label: "LLM Judge", format: (v) => v.toFixed(1) },
+  ];
+
+  const cell = (row, metric, directions) => ({
+    overall: row.overall?.[metric.key] ?? null,
+    perDirection: directions.map((d) => row.directions?.[d]?.[metric.key] ?? null),
+  });
+
+  const sortKey = (row) =>
+    row.overall?.lemma_term_success ??
+    row.overall?.exact_term_success ??
+    Math.max(...Object.values(row.directions ?? {}).map((b) => b.lemma_term_success ?? b.exact_term_success ?? 0), 0);
+
   const trackRows = $derived(
     [1, 2].map((track) => ({
       track,
+      directions: data.meta?.track_directions?.[track] ?? [],
       rows: (data.leaderboard ?? []).filter(
         (row) => row.track === track && row.mode === (track === 1 ? "proper" : "sample")
       ),
@@ -57,7 +76,7 @@
   <button class="btn btn-primary" onclick={() => dialog?.showModal()}>Add your system</button>
 </div>
 
-{#each trackRows as { track, rows } (track)}
+{#each trackRows as { track, rows, directions } (track)}
   <div class="card mb-8 bg-base-100 shadow-sm">
     <div class="card-body">
       <h2 class="card-title">
@@ -74,22 +93,29 @@
             <thead>
               <tr>
                 <th>system</th>
-                <th>chrF++ (doc)</th>
-                <th>chrF++ (para)</th>
-                <th>Exact Term Success</th>
-                <th>Lemmatized Term Success</th>
-                <th>LLM Judge</th>
+                {#each metrics as metric (metric.key)}
+                  <th>
+                    {metric.label}
+                    <div class="text-[0.65em] font-normal opacity-60">[{directions.join(", ")}]</div>
+                  </th>
+                {/each}
               </tr>
             </thead>
             <tbody>
-              {#each rows.toSorted((a, b) => (b.lemma_term_success ?? b.exact_term_success ?? 0) - (a.lemma_term_success ?? a.exact_term_success ?? 0)) as row (row.system)}
+              {#each rows.toSorted((a, b) => sortKey(b) - sortKey(a)) as row (row.system)}
                 <tr>
                   <td class="font-medium">{row.system}</td>
-                  <td>{row.chrf_doc ?? "-"}</td>
-                  <td>{row.chrf_para ?? "-"}</td>
-                  <td>{row.exact_term_success != null ? (row.exact_term_success * 100).toFixed(1) + "%" : "-"}</td>
-                  <td>{row.lemma_term_success != null ? (row.lemma_term_success * 100).toFixed(1) + "%" : "-"}</td>
-                  <td>{row.judge_score != null ? row.judge_score.toFixed(1) : "-"}</td>
+                  {#each metrics as metric (metric.key)}
+                    {@const c = cell(row, metric, directions)}
+                    <td>
+                      {#if c.overall != null}
+                        <div>{metric.format(c.overall)}</div>
+                      {/if}
+                      <div class="text-[0.65em] opacity-60">
+                        [{c.perDirection.map((v) => (v != null ? metric.format(v) : "-")).join(", ")}]
+                      </div>
+                    </td>
+                  {/each}
                 </tr>
               {/each}
             </tbody>
