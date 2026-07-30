@@ -111,7 +111,7 @@
                       {#if c.overall != null}
                         <div>{metric.format(c.overall)}</div>
                       {/if}
-                      <div class="text-[0.65em] opacity-60">
+                      <div class="text-[0.65em] opacity-80">
                         [{c.perDirection.map((v) => (v != null ? metric.format(v) : "-")).join(", ")}]
                       </div>
                     </td>
