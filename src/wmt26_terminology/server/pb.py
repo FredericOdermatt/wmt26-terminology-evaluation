@@ -4,6 +4,7 @@ from wmt26_terminology.server.config import settings
 
 _OK = 200
 _UNAUTHORIZED = 401
+_FORBIDDEN = 403
 _BAD_REQUEST = 400
 
 
@@ -32,7 +33,9 @@ class PocketBase:
 
     async def _request(self, method: str, path: str, **kwargs: object) -> httpx.Response:
         response = await self._client.request(method, path, headers=await self._headers(), **kwargs)  # type: ignore[arg-type]
-        if response.status_code == _UNAUTHORIZED:
+        # An expired token yields 403 ("only superusers ...") on rule-locked
+        # collections, not 401, so both trigger a re-auth retry.
+        if response.status_code in {_UNAUTHORIZED, _FORBIDDEN}:
             response = await self._client.request(method, path, headers=await self._headers(refresh=True), **kwargs)  # type: ignore[arg-type]
         if response.status_code >= _BAD_REQUEST:
             raise PocketBaseError(f"{method} {path}: {response.status_code} {response.text[:300]}")
