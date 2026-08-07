@@ -317,6 +317,11 @@ def _metric_block(metrics: list[dict]) -> MetricBlock:
         exact_term_success=_mean([m["exact"]["exclusive_match"] for m in metrics if m.get("exact")]),
         lemma_term_success=_mean([m["lemma"]["exclusive_match"] for m in metrics if m.get("lemma")]),
         judge_score=_mean([m["judge"]["mean"] for m in metrics if m.get("judge", {}).get("mean") is not None]),
+        comet=_mean([m["comet"]["mean"] for m in metrics if m.get("comet", {}).get("mean") is not None]),
+        metricx=_mean([m["metricx"]["mean"] for m in metrics if m.get("metricx", {}).get("mean") is not None]),
+        llm_judge_fsp=_mean(
+            [m["llm_judge_fsp"]["mean"] for m in metrics if m.get("llm_judge_fsp", {}).get("mean") is not None]
+        ),
     )
 
 
@@ -336,6 +341,9 @@ def _overall(blocks: dict[str, MetricBlock], expected: list[str], term_expected:
         exact_term_success=combine("exact_term_success", term_expected),
         lemma_term_success=combine("lemma_term_success", term_expected),
         judge_score=combine("judge_score", expected),
+        comet=combine("comet", expected),
+        metricx=combine("metricx", expected),
+        llm_judge_fsp=combine("llm_judge_fsp", expected),
     )
 
 

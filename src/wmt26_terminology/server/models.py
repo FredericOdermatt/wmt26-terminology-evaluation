@@ -65,6 +65,9 @@ class MetricBlock(BaseModel):
     exact_term_success: float | None = None
     lemma_term_success: float | None = None
     judge_score: float | None = None
+    comet: float | None = None
+    metricx: float | None = None
+    llm_judge_fsp: float | None = None
 
 
 class LeaderboardRow(BaseModel):
