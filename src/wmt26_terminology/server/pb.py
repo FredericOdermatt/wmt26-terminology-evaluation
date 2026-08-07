@@ -41,15 +41,25 @@ class PocketBase:
             raise PocketBaseError(f"{method} {path}: {response.status_code} {response.text[:300]}")
         return response
 
-    async def list(self, collection: str, filter_: str = "", sort: str = "-created", per_page: int = 500) -> list[dict]:
-        params = {"perPage": per_page, "sort": sort}
+    async def _page(self, collection: str, filter_: str, sort: str, per_page: int, page: int) -> dict:
+        params: dict[str, object] = {"page": page, "perPage": per_page, "sort": sort}
         if filter_:
             params["filter"] = filter_
         response = await self._request("GET", f"/api/collections/{collection}/records", params=params)
-        return response.json()["items"]
+        return response.json()
+
+    async def list(self, collection: str, filter_: str = "", sort: str = "-created", per_page: int = 500) -> list[dict]:
+        items: list[dict] = []
+        page = 1
+        while True:
+            payload = await self._page(collection, filter_, sort, per_page, page)
+            items.extend(payload["items"])
+            if page >= payload["totalPages"]:
+                return items
+            page += 1
 
     async def first(self, collection: str, filter_: str) -> dict | None:
-        items = await self.list(collection, filter_, per_page=1)
+        items = (await self._page(collection, filter_, "-created", 1, 1))["items"]
         return items[0] if items else None
 
     async def create(self, collection: str, data: dict, files: dict | None = None) -> dict:
