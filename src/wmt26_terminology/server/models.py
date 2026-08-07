@@ -1,4 +1,10 @@
-from pydantic import BaseModel, Field
+from typing import Literal
+
+from pydantic import BaseModel, Field, model_validator
+
+ExternalMetric = Literal["comet", "metricx", "llm_judge_fsp"]
+# Displayed as COMET, MetricX and LLM Judge (Focus Sentence Prompting).
+EXTERNAL_METRIC_KEYS: tuple[str, ...] = ("comet", "metricx", "llm_judge_fsp")
 
 
 class SystemCreate(BaseModel):
@@ -69,6 +75,62 @@ class LeaderboardRow(BaseModel):
     # Per metric, filled only when every direction that can produce the metric
     # has a value; otherwise the leaderboard shows per-direction values only.
     overall: MetricBlock
+
+
+class WorkItem(BaseModel):
+    system_id: str
+    system: str
+    track: int
+    direction: str
+    units_total: int
+    # Per external metric: how many of the units already carry it.
+    units_scored: dict[str, int]
+
+
+class SubmissionTriples(BaseModel):
+    """Parallel per-paragraph lists over every (mode, domain) unit of one
+    complete (system, track, direction); ids carry the unit and indices."""
+
+    system_id: str
+    system: str
+    track: int
+    direction: str
+    ids: list[str]
+    source: list[str]
+    hypothesis: list[str]
+    reference: list[str]
+
+    @model_validator(mode="after")
+    def _parallel(self) -> "SubmissionTriples":
+        lengths = {len(self.ids), len(self.source), len(self.hypothesis), len(self.reference)}
+        if len(lengths) > 1:
+            raise ValueError("ids/source/hypothesis/reference must be parallel lists of equal length")
+        return self
+
+
+class ExternalScoresPost(BaseModel):
+    metric: ExternalMetric
+    # Model name/checkpoint + settings, stored verbatim next to the scores.
+    meta: dict = Field(min_length=1)
+    # Paragraph id -> score; any subset of the ids served by GET /submissions.
+    scores: dict[str, float] = Field(min_length=1)
+    danger_overwrite: bool = False
+
+
+class UnitScoreResult(BaseModel):
+    track: int
+    mode: str
+    domain: str
+    direction: str
+    segments_written: int
+    mean: float
+
+
+class ExternalScoresResult(BaseModel):
+    metric: str
+    units_updated: int
+    segments_written: int
+    units: list[UnitScoreResult]
 
 
 class EvaluateRequest(BaseModel):

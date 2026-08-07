@@ -10,11 +10,36 @@ from wmt26_terminology.schema import TestSet
 from wmt26_terminology.server.config import settings
 from wmt26_terminology.server.judge import judge_submission
 from wmt26_terminology.server.pb import PocketBase
-from wmt26_terminology.server.submissions import TRACK_MODES
+from wmt26_terminology.server.submissions import TRACK_MODES, Slot
 
 # A lemma unit costs roughly this many exact units of wall time; used only
 # for smooth progress percentages.
 _LEMMA_WEIGHT = 8
+
+
+async def upsert_score(pb: PocketBase, system_id: str, slot: Slot, metrics: dict) -> None:
+    """Merge `metrics` into the unit's score record so stages and external
+    scorers fill in keys independently."""
+    filter_ = (
+        f'system = "{system_id}" && track = {slot.track} && domain = "{slot.domain}" '
+        f'&& direction = "{slot.direction}" && mode = "{slot.mode}"'
+    )
+    existing = await pb.first("scores", filter_)
+    if existing:
+        merged = {**existing.get("metrics", {}), **metrics}
+        await pb.update("scores", existing["id"], {"metrics": merged})
+    else:
+        await pb.create(
+            "scores",
+            {
+                "system": system_id,
+                "track": slot.track,
+                "domain": slot.domain,
+                "direction": slot.direction,
+                "mode": slot.mode,
+                "metrics": metrics,
+            },
+        )
 
 
 class Evaluator:
@@ -66,26 +91,8 @@ class Evaluator:
         return submissions
 
     async def _upsert_score(self, system_id: str, test_set: TestSet, mode: str, metrics: dict) -> None:
-        filter_ = (
-            f'system = "{system_id}" && track = {test_set.track} && domain = "{test_set.domain}" '
-            f'&& direction = "{test_set.pair}" && mode = "{mode}"'
-        )
-        existing = await self._pb.first("scores", filter_)
-        if existing:
-            merged = {**existing.get("metrics", {}), **metrics}
-            await self._pb.update("scores", existing["id"], {"metrics": merged})
-        else:
-            await self._pb.create(
-                "scores",
-                {
-                    "system": system_id,
-                    "track": test_set.track,
-                    "domain": test_set.domain,
-                    "direction": test_set.pair,
-                    "mode": mode,
-                    "metrics": metrics,
-                },
-            )
+        slot = Slot(track=test_set.track, mode=mode, domain=test_set.domain, direction=test_set.pair)
+        await upsert_score(self._pb, system_id, slot, metrics)
 
     async def _evaluate(self, evaluation_id: str) -> None:
         record = await self._pb.first("evaluations", f'id = "{evaluation_id}"')

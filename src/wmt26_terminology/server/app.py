@@ -15,6 +15,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from wmt26_terminology.evaluate import load_test_sets
 from wmt26_terminology.server import turnstile
 from wmt26_terminology.server.config import settings
+from wmt26_terminology.server.external import router as external_router
 from wmt26_terminology.server.models import (
     EvaluateRequest,
     EvaluationView,
@@ -75,6 +76,7 @@ async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="WMT26 Terminology Submission API", lifespan=_lifespan)
+app.include_router(external_router)
 
 
 async def _authed_system(

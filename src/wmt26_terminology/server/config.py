@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     evaluations_per_system_per_day: int = 8
     judge_enabled: bool = True
     openrouter_api_key: str = ""
+    # Static bearer key for the offline GPU scorer; empty disables the
+    # /v1/external endpoints.
+    worker_api_key: str = ""
 
     model_config = {"env_prefix": "WMT26_"}
 
