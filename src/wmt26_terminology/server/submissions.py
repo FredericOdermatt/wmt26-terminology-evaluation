@@ -1,8 +1,8 @@
 import json
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
-from wmt26_terminology.metrics.submission import Submission, split_paragraphs
+from wmt26_terminology.metrics.submission import Submission, SubmissionUpload
 from wmt26_terminology.schema import TestSet
 
 TRACK_MODES = {1: ("noterm", "proper", "random"), 2: ("noterm", "sample")}
@@ -46,20 +46,14 @@ def _candidate_tracks(test_sets: list[TestSet], mode: str, domain: str, directio
 
 def _validate_documents(raw: object, test_set: TestSet) -> list[list[str]] | str:
     """Returns parsed paragraphs per document, or a human-readable problem."""
-    if not isinstance(raw, list) or not all(isinstance(item, str) for item in raw):
-        return "the file must be a JSON list of strings (one string per translated document)"
-    if len(raw) != len(test_set.documents):
-        return f"expected {len(test_set.documents)} documents (strings) as in the input file, got {len(raw)}"
-    documents = []
-    for index, (text, doc) in enumerate(zip(raw, test_set.documents, strict=True)):
-        paragraphs = split_paragraphs(text)
-        if len(paragraphs) != len(doc.paragraphs):
-            return (
-                f"document {index}: expected {len(doc.paragraphs)} paragraphs as in the input file, "
-                f"got {len(paragraphs)} (paragraphs split on \\n\\n if present, else \\n)"
-            )
-        documents.append(paragraphs)
-    return documents
+    try:
+        upload = SubmissionUpload.model_validate(raw, context={"test_set": test_set})
+    except ValidationError as error:
+        first = error.errors()[0]
+        if first["type"] != "value_error":
+            return "the file must be a JSON list of strings (one string per translated document)"
+        return str(first["ctx"]["error"])
+    return upload.paragraphs()
 
 
 def parse_upload(filename: str, content: bytes, test_sets: list[TestSet]) -> ParsedUpload:
