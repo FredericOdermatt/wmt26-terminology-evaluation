@@ -39,6 +39,9 @@
     { key: "exact_term_success", label: "Exact Term Success", format: (v) => (v * 100).toFixed(1) + "%" },
     { key: "lemma_term_success", label: "Lemmatized Term Success", format: (v) => (v * 100).toFixed(1) + "%" },
     { key: "judge_score", label: "LLM Judge", format: (v) => v.toFixed(1) },
+    { key: "comet", label: "COMET", format: (v) => (v * 100).toFixed(1) },
+    { key: "metricx", label: "MetricX ↓", format: (v) => v.toFixed(2) },
+    { key: "llm_judge_fsp", label: "LLM Judge (FSP)", format: (v) => v.toFixed(1) },
   ];
 
   const cell = (row, metric, directions) => ({
