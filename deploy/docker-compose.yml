@@ -53,6 +53,7 @@ services:
       WMT26_PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD}
       WMT26_TURNSTILE_SECRET: ${TURNSTILE_SECRET:-}
       WMT26_OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      WMT26_WORKER_API_KEY: ${WORKER_API_KEY:-}
       WMT26_UNIFIED_DATA_DIR: /app/data/unified/private
     volumes:
       # Gold data is synced to the host separately and never baked into the image.
