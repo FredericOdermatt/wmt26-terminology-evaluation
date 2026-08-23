@@ -4,7 +4,7 @@ Evaluation tooling for the [WMT26 terminology shared task](https://www2.statmt.o
 document-level MT with terminology guidance for en→pl, es→eu (tracks 1 and 2) and zh→en (track 2).
 
 - `data/public/`: the released competitor-facing data and the official validation script
-- `data/unified/`: unified test sets built from the provider gold data
+- `data/unified/`: unified test sets **with gold data**
 
 ```bash
 make install
