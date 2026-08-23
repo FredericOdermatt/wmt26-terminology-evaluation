@@ -22,12 +22,22 @@ class BitextSample(BaseModel):
     document_id: str | None = None
 
 
+class TermAnnotation(BaseModel):
+    """One required term occurrence in a segment: the source term, the acceptable target
+    renditions and, where the provider annotated it, the surface form used by the reference."""
+
+    source: str
+    targets: list[str]
+    target_inflected: str | None = None
+
+
 class Segment(BaseModel):
     """`seen_as_sample`: the segment's gold pair was released as a track-2 sample bitext."""
 
     source: str
     reference: str | None = None
     seen_as_sample: bool = False
+    terms: list[TermAnnotation] = []
 
 
 class Paragraph(BaseModel):
@@ -48,6 +58,9 @@ class Document(BaseModel):
 
 
 class TestSet(BaseModel):
+    """`glossary` is the released dictionary for track 1; for track 2 it is the evaluation-side
+    dictionary the term annotations draw on (hkma), never seen by competitors."""
+
     provider: Provider
     track: Literal[1, 2]
     pair: LanguagePair
