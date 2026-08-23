@@ -32424,6 +32424,11 @@
                   "source": "transporte",
                   "target": "garraio",
                   "target_inflected": "garraio"
+                },
+                {
+                  "source": "semirremolque",
+                  "target": "erdiatoi",
+                  "target_inflected": "erdiatoiak"
                 }
               ]
             }
@@ -32457,6 +32462,11 @@
                   "source": "flota",
                   "target": "flota",
                   "target_inflected": "flota"
+                },
+                {
+                  "source": "semirremolque",
+                  "target": "erdiatoi",
+                  "target_inflected": "erdiatoiak"
                 }
               ]
             },
@@ -32883,6 +32893,11 @@
                   "source": "transporte",
                   "target": "garraio",
                   "target_inflected": "garraio"
+                },
+                {
+                  "source": "semirremolque",
+                  "target": "erdiatoi",
+                  "target_inflected": "erdiatoiak"
                 }
               ]
             }
@@ -32916,6 +32931,11 @@
                   "source": "flota",
                   "target": "flota",
                   "target_inflected": "flota"
+                },
+                {
+                  "source": "semirremolque",
+                  "target": "erdiatoi",
+                  "target_inflected": "erdiatoiak"
                 }
               ]
             },

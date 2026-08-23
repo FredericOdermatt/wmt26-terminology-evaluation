@@ -3325,7 +3325,17 @@
           "segments": [
             {
               "source": "La mayoría de los sistemas de energía eólica16 disponibles necesitan la intervención del dueño durante el funcionamiento.",
-              "reference": "Eskuragarri dauden haize-energiako sistema gehienek jabearen esku-hartzea behar dute funtzionamendurako."
+              "reference": "Eskuragarri dauden haize-energiako sistema gehienek jabearen esku-hartzea behar dute funtzionamendurako.",
+              "terms": [
+                {
+                  "source": "energía eólica",
+                  "target": "haize-energia",
+                  "glossary_targets": [
+                    "haize-energia"
+                  ],
+                  "target_inflected": "haize-energiako"
+                }
+              ]
             },
             {
               "source": "Muchos fabricantes ofrecen servicio de mantenimiento para las aeroturbinas que ellos instalan.",

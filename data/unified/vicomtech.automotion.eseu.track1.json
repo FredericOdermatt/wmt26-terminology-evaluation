@@ -26590,6 +26590,14 @@
                   "target_inflected": "balbulak"
                 },
                 {
+                  "source": "inyector",
+                  "target": "injektore",
+                  "glossary_targets": [
+                    "injektore"
+                  ],
+                  "target_inflected": "injektorea"
+                },
+                {
                   "source": "carburador",
                   "target": "karburagailu",
                   "glossary_targets": [
@@ -30743,6 +30751,14 @@
               "source": "Bomba inyectora: Suministra combustible al cilindro en el momento adecuado, puede ser de tipo mecánico o electrónica.",
               "reference": "Ponpa injektorea: Une egokian ematen dio erregaia zilindroari, eta mekanikoa edo elektronikoa izan daiteke.",
               "terms": [
+                {
+                  "source": "inyector",
+                  "target": "injektore",
+                  "glossary_targets": [
+                    "injektore"
+                  ],
+                  "target_inflected": "injektorea"
+                },
                 {
                   "source": "cilindro",
                   "target": "zilindro",
@@ -37551,6 +37567,13 @@
                   "target_inflected": "Aurreko trakzioa"
                 },
                 {
+                  "source": "FWD",
+                  "target": "aurreko trakzio",
+                  "glossary_targets": [
+                    "aurreko trakzio"
+                  ]
+                },
+                {
                   "source": "diferencial",
                   "target": "diferentzial",
                   "glossary_targets": [
@@ -38277,7 +38300,17 @@
             },
             {
               "source": "Este tipo de sistemas se suele utilizar en motores de combustión interna alternativos, tanto en los motores diésel como gasolina.",
-              "reference": "Sistema-mota hori barne-errekuntzako motor alternatiboetan erabili ohi da, hala diesel-motorretan nola gasolinazko motorretan."
+              "reference": "Sistema-mota hori barne-errekuntzako motor alternatiboetan erabili ohi da, hala diesel-motorretan nola gasolinazko motorretan.",
+              "terms": [
+                {
+                  "source": "motor diésel",
+                  "target": "diesel-motor",
+                  "glossary_targets": [
+                    "diesel-motor"
+                  ],
+                  "target_inflected": "diesel-motorretan"
+                }
+              ]
             }
           ]
         },
