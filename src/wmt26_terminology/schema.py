@@ -4,7 +4,6 @@ from pydantic import BaseModel, model_validator
 
 Provider = Literal["laniqo", "vicomtech", "hkma"]
 LanguagePair = Literal["enpl", "eseu", "zhen"]
-Alignment = Literal["exact", "fuzzy", "unaligned"]
 
 
 class TermEntry(BaseModel):
@@ -32,17 +31,12 @@ class Segment(BaseModel):
 
 
 class Paragraph(BaseModel):
-    """`alignment`/`seg_ids` are set when the paragraph is recovered from a provider
-    segment stream (vicomtech): the released text was edited after extraction, so the
-    provenance of each paragraph's reference is recorded. `seg_ids` are in released
-    order, one per segment; the release occasionally recomposes paragraphs from
-    non-contiguous segs."""
+    """`reference` is None where no gold translation of the released text exists; such
+    paragraphs are excluded from scoring on both sides."""
 
     source: str
     reference: str | None = None
     segments: list[Segment] = []
-    alignment: Alignment | None = None
-    seg_ids: list[int] | None = None
 
 
 class Document(BaseModel):
