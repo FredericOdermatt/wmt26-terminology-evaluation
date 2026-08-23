@@ -16,12 +16,6 @@ class Glossary(BaseModel):
     random: list[TermEntry]
 
 
-class BitextSample(BaseModel):
-    source: str
-    target: str
-    document_id: str | None = None
-
-
 class TermAnnotation(BaseModel):
     """
     `target` the single lemma annotated for this occurrence
@@ -33,6 +27,13 @@ class TermAnnotation(BaseModel):
     target: str
     glossary_targets: list[str] = []
     target_inflected: str | None = None
+
+
+class BitextSample(BaseModel):
+    source: str
+    target: str
+    document_id: str | None = None
+    terms: list[TermAnnotation] = []
 
 
 class Segment(BaseModel):
