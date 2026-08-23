@@ -30,6 +30,8 @@ class TermAnnotation(BaseModel):
 
 
 class BitextSample(BaseModel):
+    """The Task 2 provided samples"""
+
     source: str
     target: str
     document_id: str | None = None
