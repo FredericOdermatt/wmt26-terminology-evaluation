@@ -23,14 +23,16 @@ class BitextSample(BaseModel):
 
 
 class TermAnnotation(BaseModel):
-    """One required term occurrence in a segment. `target` is the rendition annotated for this
-    occurrence (provider base form; for hkma the dictionary alternative the reference uses),
-    `target_inflected` the surface form attested in the reference where the provider gives it,
-    `targets` every acceptable rendition (annotated and released glossary alternatives)."""
+    """One required term occurrence in a segment. `target` is the single rendition annotated
+    for this occurrence (provider base form; for hkma the dictionary alternative the reference
+    uses), `target_inflected` the surface form attested in the reference where the provider
+    gives it, `glossary_targets` the dictionary alternatives for `source` (released glossary
+    for track 1, hkma's dictionary; empty where no dictionary exists). Lenient matching accepts
+    `target` or any of `glossary_targets`."""
 
     source: str
     target: str
-    targets: list[str]
+    glossary_targets: list[str] = []
     target_inflected: str | None = None
 
 
