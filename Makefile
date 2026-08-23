@@ -13,4 +13,10 @@ format: ruff
 
 check: ruff-ci
 
-.PHONY: install ruff ruff-ci format check
+evaluate:
+	$(UV) python -m wmt26_terminology.evaluate --submissions $(SUBMISSIONS) --out $(OUT)
+
+evaluate-oracle:
+	$(UV) python -m wmt26_terminology.evaluate --oracle
+
+.PHONY: install evaluate evaluate-oracle ruff ruff-ci format check
