@@ -1,5 +1,5 @@
 # Data
 
-`data/public`: the exact files released to competitors (track 1 `text.*.json` and `terms.*.json`, track 2 `text.*.json` and `sample.*.json`) and the official `validation-26.py`.
+`data/public` the exact files released to competitors
 
-`data/unified`: the same data with the gold references and term annotations, one file per test set (`{provider}.{domain}.{pair}.track{n}.json`). Each file parses as `TestSet` from `src/wmt26_terminology/schema.py`: `TestSet -> Document -> Paragraph -> Segment`, paragraph delimiter explicit per set, released glossary and samples attached verbatim. A paragraph whose reference is `null` has no usable gold translation and is excluded from scoring on both sides. Segments carry `seen_as_sample` (track 2: the gold pair was released as a sample bitext) and `terms`, one `TermAnnotation` per required occurrence: `source`, `target` (the one rendition annotated for this occurrence), `target_inflected` (the surface form attested in the reference, where the provider gives it), `glossary_targets` (the dictionary alternatives for the source term; empty where no dictionary exists). The default fields of the schema are omitted from the files.
+`data/unified` the same data, but with the gold truth target. Parseable as pydantic `class TestSet` as defined in `src/wmt26_terminology/schema.py`.
