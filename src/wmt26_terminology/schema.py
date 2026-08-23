@@ -1,0 +1,94 @@
+from typing import Literal
+
+from pydantic import BaseModel, model_validator
+
+Provider = Literal["laniqo", "vicomtech", "hkma"]
+LanguagePair = Literal["enpl", "eseu", "zhen"]
+Alignment = Literal["exact", "fuzzy", "unaligned"]
+
+
+class TermEntry(BaseModel):
+    source: str
+    targets: list[str]
+
+
+class Glossary(BaseModel):
+    proper: list[TermEntry]
+    random: list[TermEntry]
+
+
+class BitextSample(BaseModel):
+    source: str
+    target: str
+    document_id: str | None = None
+
+
+class Segment(BaseModel):
+    """`seen_as_sample`: the segment's gold pair was released as a track-2 sample bitext."""
+
+    source: str
+    reference: str | None = None
+    seen_as_sample: bool = False
+
+
+class Paragraph(BaseModel):
+    """`alignment`/`seg_ids` are set when the paragraph is recovered from a provider
+    segment stream (vicomtech): the released text was edited after extraction, so the
+    provenance of each paragraph's reference is recorded. `seg_ids` are in released
+    order, one per segment; the release occasionally recomposes paragraphs from
+    non-contiguous segs."""
+
+    source: str
+    reference: str | None = None
+    segments: list[Segment] = []
+    alignment: Alignment | None = None
+    seg_ids: list[int] | None = None
+
+
+class Document(BaseModel):
+    document_id: str
+    paragraphs: list[Paragraph]
+
+    def source_text(self, delimiter: str) -> str:
+        return delimiter.join(p.source for p in self.paragraphs)
+
+
+class TestSet(BaseModel):
+    provider: Provider
+    track: Literal[1, 2]
+    pair: LanguagePair
+    domain: str
+    source_lang: str
+    target_lang: str
+    paragraph_delimiter: str | None
+    documents: list[Document]
+    glossary: Glossary | None = None
+    samples: list[BitextSample] | None = None
+
+    @model_validator(mode="after")
+    def _track_payload(self) -> "TestSet":
+        if self.track == 1 and self.glossary is None:
+            raise ValueError("track 1 requires a glossary")
+        if self.track != 1 and self.samples is None:
+            raise ValueError("track 2 requires samples")
+        return self
+
+    def public_texts(self) -> list[str]:
+        """The released `text.{domain}.{pair}.json` content."""
+        if self.paragraph_delimiter is None:
+            assert all(len(d.paragraphs) == 1 for d in self.documents), "delimiter-less set must be single-paragraph"
+            return [d.paragraphs[0].source for d in self.documents]
+        return [d.source_text(self.paragraph_delimiter) for d in self.documents]
+
+    def public_terms(self) -> dict[str, dict[str, list[str]]]:
+        """The released `terms.{domain}.{pair}.json` content."""
+        assert self.glossary is not None
+        return {
+            mode: {e.source: e.targets for e in entries}
+            for mode, entries in (("proper", self.glossary.proper), ("random", self.glossary.random))
+        }
+
+    def public_samples(self) -> list[dict[str, str]]:
+        """The released `sample.{domain}.{pair}.json` content."""
+        assert self.samples is not None
+        return [{self.source_lang: s.source, self.target_lang: s.target} for s in self.samples]
