@@ -8,6 +8,6 @@ document-level MT with terminology guidance for en→pl, es→eu (tracks 1 and 2
 
 ```bash
 make install
-make evaluate-oracle                              # score the references against themselves
+make evaluate-gold                                # score the references against themselves
 make evaluate SUBMISSIONS=dir OUT=results         # score {system}.{mode}.{domain}.{pair}.json files
 ```

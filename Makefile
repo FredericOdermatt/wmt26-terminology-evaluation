@@ -16,7 +16,7 @@ check: ruff-ci
 evaluate:
 	$(UV) python -m wmt26_terminology.evaluate --submissions $(SUBMISSIONS) --out $(OUT)
 
-evaluate-oracle:
-	$(UV) python -m wmt26_terminology.evaluate --oracle
+evaluate-gold:
+	$(UV) python -m wmt26_terminology.evaluate --gold
 
-.PHONY: install evaluate evaluate-oracle ruff ruff-ci format check
+.PHONY: install evaluate evaluate-gold ruff ruff-ci format check

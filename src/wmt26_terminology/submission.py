@@ -45,8 +45,8 @@ def parse_submission(raw: list[str], test_set: TestSet, system: str, mode: str, 
     return Submission(system=system, mode=mode, documents=documents)
 
 
-def oracle_submission(test_set: TestSet) -> Submission:
+def gold_submission(test_set: TestSet) -> Submission:
     mode = "proper" if test_set.track == 1 else "sample"
     return Submission(
-        system="oracle", mode=mode, documents=[[p.reference or "" for p in d.paragraphs] for d in test_set.documents]
+        system="gold", mode=mode, documents=[[p.reference or "" for p in d.paragraphs] for d in test_set.documents]
     )

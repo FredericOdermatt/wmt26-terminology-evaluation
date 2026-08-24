@@ -7,7 +7,7 @@ from wmt26_terminology.metrics.lemma import Lemmatizer
 from wmt26_terminology.metrics.terms import score_terms, term_rates
 from wmt26_terminology.results import EvaluationResult, ParagraphResult
 from wmt26_terminology.schema import TestSet
-from wmt26_terminology.submission import TRACK_MODES, Submission, load_submission, oracle_submission, parse_filename
+from wmt26_terminology.submission import TRACK_MODES, Submission, gold_submission, load_submission, parse_filename
 
 METRIC_VERSION = "1"
 UNIFIED = Path(__file__).resolve().parents[2] / "data" / "unified"
@@ -73,14 +73,14 @@ def _format_row(r: EvaluationResult) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description="score submissions ({system}.{mode}.{domain}.{pair}.json) or the references")
     parser.add_argument("--submissions", type=Path, help="directory with submission files")
-    parser.add_argument("--oracle", action="store_true", help="score the references against themselves")
+    parser.add_argument("--gold", action="store_true", help="score the references against themselves")
     parser.add_argument("--out", type=Path, help="write one result JSON per (system, mode, test set) here")
     parser.add_argument("--track", type=int, choices=[1, 2])
     parser.add_argument("--skip-lemma", action="store_true", help="skip the stanza lemma tiers")
     parser.add_argument("--cpu", action="store_true", help="run stanza on the CPU")
     args = parser.parse_args()
-    if args.oracle == (args.submissions is not None):
-        parser.error("pass exactly one of --oracle or --submissions")
+    if args.gold == (args.submissions is not None):
+        parser.error("pass exactly one of --gold or --submissions")
 
     lemmatizers = Lemmatizers(not args.skip_lemma, False if args.cpu else None)
     print(
@@ -90,8 +90,8 @@ def main() -> None:
     for test_set in load_test_sets():
         if args.track and test_set.track != args.track:
             continue
-        if args.oracle:
-            submissions = [oracle_submission(test_set)]
+        if args.gold:
+            submissions = [gold_submission(test_set)]
         else:
             paths = sorted(
                 p for p in args.submissions.glob("*.json") if parse_filename(p.name)[2:] == (test_set.domain, test_set.pair)
