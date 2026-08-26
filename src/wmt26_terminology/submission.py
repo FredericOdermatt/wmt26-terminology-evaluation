@@ -17,10 +17,9 @@ class Submission(BaseModel):
 def split_paragraphs(text: str, delimiter: str | None) -> list[str]:
     """Split by the test set's own delimiter; document-level sets (no delimiter) are one paragraph.
 
-    Stricter than the official validation-26.py heuristic (\\n\\n when present, else \\n), which
-    switches delimiter per document: an empty paragraph inside a \\n-joined document creates a
-    \\n\\n that flips the split for the whole document, and a mixed-join document can pass the
-    count check with misaligned paragraphs."""
+    Stricter than the official validation-26.py heuristic (\\n\\n when present, else \\n), whose
+    per-document delimiter flip lets empty paragraphs and mixed joins mis-split a document while
+    still passing the count check."""
     return text.split(delimiter) if delimiter else [text]
 
 
