@@ -14,9 +14,14 @@ class Submission(BaseModel):
     documents: list[list[str]]
 
 
-def split_paragraphs(text: str) -> list[str]:
-    """The delimiter heuristic of the official validation-26.py."""
-    return text.split("\n\n") if "\n\n" in text else text.split("\n")
+def split_paragraphs(text: str, delimiter: str | None) -> list[str]:
+    """Split by the test set's own delimiter; document-level sets (no delimiter) are one paragraph.
+
+    Stricter than the official validation-26.py heuristic (\\n\\n when present, else \\n), which
+    switches delimiter per document: an empty paragraph inside a \\n-joined document creates a
+    \\n\\n that flips the split for the whole document, and a mixed-join document can pass the
+    count check with misaligned paragraphs."""
+    return text.split(delimiter) if delimiter else [text]
 
 
 def parse_filename(name: str) -> tuple[str, str, str, str]:
@@ -38,7 +43,7 @@ def parse_submission(raw: list[str], test_set: TestSet, system: str, mode: str, 
         raise ValueError(f"{label}: {len(raw)} documents, expected {len(test_set.documents)}")
     documents = []
     for index, (text, doc) in enumerate(zip(raw, test_set.documents, strict=True)):
-        paragraphs = split_paragraphs(text)
+        paragraphs = split_paragraphs(text, test_set.paragraph_delimiter)
         if len(paragraphs) != len(doc.paragraphs):
             raise ValueError(f"{label} doc {index}: {len(paragraphs)} paragraphs, expected {len(doc.paragraphs)}")
         documents.append(paragraphs)
