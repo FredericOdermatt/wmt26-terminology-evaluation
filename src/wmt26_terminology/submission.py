@@ -41,11 +41,19 @@ def parse_submission(raw: list[str], test_set: TestSet, system: str, mode: str, 
         raise ValueError(f"{label}: mode {mode!r} is not a track {test_set.track} mode")
     if len(raw) != len(test_set.documents):
         raise ValueError(f"{label}: {len(raw)} documents, expected {len(test_set.documents)}")
+    delimiter = test_set.paragraph_delimiter
     documents = []
     for index, (text, doc) in enumerate(zip(raw, test_set.documents, strict=True)):
-        paragraphs = split_paragraphs(text, test_set.paragraph_delimiter)
+        paragraphs = split_paragraphs(text, delimiter)
         if len(paragraphs) != len(doc.paragraphs):
-            raise ValueError(f"{label} doc {index}: {len(paragraphs)} paragraphs, expected {len(doc.paragraphs)}")
+            message = f"{label} doc {index}: {len(paragraphs)} paragraphs, expected {len(doc.paragraphs)}; " + (
+                f"paragraphs must be joined with {delimiter!r}" if delimiter else "submit each document as one string"
+            )
+            if delimiter:
+                other = "\n" if delimiter == "\n\n" else "\n\n"
+                if len(text.split(other)) == len(doc.paragraphs):
+                    message += f" (this document looks {other!r}-joined)"
+            raise ValueError(message)
         documents.append(paragraphs)
     return Submission(system=system, mode=mode, documents=documents)
 
