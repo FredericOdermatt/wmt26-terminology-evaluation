@@ -7,6 +7,11 @@ import httpx
 
 Scores = list[dict]
 ScoreFn = Callable[[list[dict]], Scores]
+_RETRIES = 12
+_BACKOFF = 10
+_SERVER_ERROR = 500
+# The reverse proxy answers 404 while the backend container is being replaced.
+_NOT_FOUND = 404
 
 
 class ScorerClient:
@@ -20,18 +25,30 @@ class ScorerClient:
         key = os.environ["WMT26_SCORER_KEY"]
         self._client = httpx.Client(base_url=api, headers={"authorization": f"Bearer {key}"}, timeout=600)
 
+    def _request(self, method: str, path: str, **kwargs: object) -> httpx.Response:
+        """A portal redeploy or a dropped connection must not lose a run that has hours of
+        GPU time behind it: retry with backoff, then give up."""
+        for attempt in range(_RETRIES):
+            try:
+                response = self._client.request(method, path, **kwargs)  # type: ignore[arg-type]
+                if response.status_code < _SERVER_ERROR and response.status_code != _NOT_FOUND:
+                    response.raise_for_status()
+                    return response
+                reason: str = f"HTTP {response.status_code}"
+            except httpx.TransportError as error:
+                reason = type(error).__name__
+            print(f"{method} {path}: {reason}, retry {attempt + 1}/{_RETRIES} in {_BACKOFF * (attempt + 1)}s", flush=True)
+            time.sleep(_BACKOFF * (attempt + 1))
+        raise RuntimeError(f"{method} {path} failed {_RETRIES} times")
+
     def units(self, level: str = "segment", limit: int = 1000) -> list[dict]:
         params = {"metric": self.metric, "version": self.version, "level": level, "limit": limit}
         params |= {"direction": self.direction, "order": self.order}
-        response = self._client.get("/v1/external/units", params=params)
-        response.raise_for_status()
-        return response.json()
+        return self._request("GET", "/v1/external/units", params=params).json()
 
     def post(self, scores: Scores, meta: dict) -> int:
         payload = {"metric": self.metric, "version": self.version, "meta": meta, "scores": scores}
-        response = self._client.post("/v1/external/scores", json=payload)
-        response.raise_for_status()
-        return response.json()["written"]
+        return self._request("POST", "/v1/external/scores", json=payload).json()["written"]
 
     def reset(self, system: str = "") -> dict:
         params = {"metric": self.metric, "version": self.version, "system": system}
