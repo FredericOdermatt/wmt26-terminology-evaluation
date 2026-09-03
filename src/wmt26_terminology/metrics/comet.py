@@ -66,13 +66,16 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--fetch", type=int, default=2000, help="units per API round trip")
     parser.add_argument("--direction", default="", help="score one language direction only, e.g. eseu")
+    parser.add_argument(
+        "--order", choices=("oldest", "newest"), default="oldest", help="which end of the file list to start from"
+    )
     parser.add_argument("--dry-run", action="store_true", help="time one file, post nothing")
     args = parser.parse_args()
     artifacts, api_version, default_precision = MODELS[args.metric]
     precision = args.precision or default_precision
     model = load(args.metric, precision)
     score = scorer(model, args.metric, args.batch_size)
-    client = ScorerClient(args.metric, api_version, args.direction)
+    client = ScorerClient(args.metric, api_version, args.direction, args.order)
     if args.dry_run:
         client.dry_run(score, limit=args.fetch)
         return

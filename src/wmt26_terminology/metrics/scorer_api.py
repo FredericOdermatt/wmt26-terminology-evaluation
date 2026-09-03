@@ -14,14 +14,15 @@ class ScorerClient:
     not ok never reach the model: they are posted with the metric's worst score and the status
     as payload, so omissions and over-cap pieces count against the system."""
 
-    def __init__(self, metric: str, version: str, direction: str = "", api: str | None = None, key: str | None = None) -> None:
-        self.metric, self.version, self.direction = metric, version, direction
-        api = api or os.environ.get("WMT26_API", "http://127.0.0.1:8092")
-        key = key or os.environ["WMT26_SCORER_KEY"]
+    def __init__(self, metric: str, version: str, direction: str = "", order: str = "oldest") -> None:
+        self.metric, self.version, self.direction, self.order = metric, version, direction, order
+        api = os.environ.get("WMT26_API", "http://127.0.0.1:8092")
+        key = os.environ["WMT26_SCORER_KEY"]
         self._client = httpx.Client(base_url=api, headers={"authorization": f"Bearer {key}"}, timeout=600)
 
     def units(self, level: str = "segment", limit: int = 1000) -> list[dict]:
-        params = {"metric": self.metric, "version": self.version, "level": level, "limit": limit, "direction": self.direction}
+        params = {"metric": self.metric, "version": self.version, "level": level, "limit": limit}
+        params |= {"direction": self.direction, "order": self.order}
         response = self._client.get("/v1/external/units", params=params)
         response.raise_for_status()
         return response.json()
