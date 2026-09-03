@@ -87,6 +87,22 @@ class TestSet(BaseModel):
             raise ValueError("track 2 requires samples")
         return self
 
+    @model_validator(mode="after")
+    def _segments_join_to_paragraphs(self) -> "TestSet":
+        """Segments are exact slices of their paragraph on both sides, so anything scored at
+        segment level scores the released wording. Chinese joins without a separator."""
+        joiners = {"source": "" if self.source_lang == "zh" else " ", "reference": "" if self.target_lang == "zh" else " "}
+        for document in self.documents:
+            for index, paragraph in enumerate(document.paragraphs):
+                for side, joiner in joiners.items():
+                    text = getattr(paragraph, side)
+                    if text is None or not paragraph.segments:
+                        continue
+                    joined = joiner.join(getattr(segment, side) or "" for segment in paragraph.segments)
+                    if joined != text.strip():
+                        raise ValueError(f"{document.document_id} paragraph {index}: segments do not join to the {side}")
+        return self
+
     def public_texts(self) -> list[str]:
         """The released `text.{domain}.{pair}.json` content."""
         if self.paragraph_delimiter is None:
