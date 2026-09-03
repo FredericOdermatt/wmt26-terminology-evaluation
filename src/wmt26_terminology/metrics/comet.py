@@ -16,7 +16,7 @@ from comet import load_from_checkpoint
 from comet.models import CometModel
 
 from wmt26_terminology.metrics.scorer_api import ScoreFn, ScorerClient
-from wmt26_terminology.models import COMET_DA, Artifact, fetch_snapshot
+from wmt26_terminology.models import COMET_DA, COMET_KIWI, XCOMET_XXL, Artifact, fetch_snapshot
 
 NAME = "comet"
 EXTERNAL = True
@@ -25,7 +25,10 @@ WORST_SCORE = 0.0
 MODELS: dict[str, tuple[tuple[Artifact, ...], str, str]] = {
     # metric -> (artifacts, version posted to the portal, default precision)
     "comet": (COMET_DA, "wmt22-comet-da-seg", "fp32"),
+    "comet_qe": (COMET_KIWI, "wmt22-cometkiwi-da-seg", "fp32"),
+    "xcomet": (XCOMET_XXL, "xcomet-xxl-seg", "bf16"),
 }
+_REFERENCE_FREE = {"comet_qe"}
 _DTYPES = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.bfloat16}
 
 
@@ -36,11 +39,13 @@ def load(metric: str, precision: str) -> CometModel:
     return model.to(_DTYPES[precision])
 
 
-def scorer(model: CometModel, batch_size: int) -> ScoreFn:
+def scorer(model: CometModel, metric: str, batch_size: int) -> ScoreFn:
+    keys = ("source", "hypothesis") if metric in _REFERENCE_FREE else ("source", "hypothesis", "reference")
+
     def score(units: list[dict]) -> list[dict]:
         if not units:
             return []
-        samples = [{"src": u["source"], "mt": u["hypothesis"], "ref": u["reference"]} for u in units]
+        samples = [dict(zip(("src", "mt", "ref"), (u[k] for k in keys), strict=False)) for u in units]
         out = model.predict(samples, batch_size=batch_size, gpus=1, progress_bar=False)
         spans = (out.metadata or {}).get("error_spans") if hasattr(out, "metadata") else None
         scores = []
@@ -65,7 +70,7 @@ def main() -> None:
     artifacts, api_version, default_precision = MODELS[args.metric]
     precision = args.precision or default_precision
     model = load(args.metric, precision)
-    score = scorer(model, args.batch_size)
+    score = scorer(model, args.metric, args.batch_size)
     client = ScorerClient(args.metric, api_version)
     if args.dry_run:
         client.dry_run(score, limit=args.fetch)
@@ -78,6 +83,7 @@ def main() -> None:
         "python": platform.python_version(),
         "precision": precision,
         "batch_size": args.batch_size,
+        "reference_free": args.metric in _REFERENCE_FREE,
         "level": "segment",
         "forced": f"empty and over-cap pieces take {WORST_SCORE}",
     }

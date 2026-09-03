@@ -44,6 +44,34 @@ COMET_DA = (
         "265ef22345ea5b9ffa020a7fe5be613a95ff931c44bf8d09a26d96c6c6048f60",
     ),
 )
+COMET_KIWI = (
+    Artifact(
+        "Unbabel/wmt22-cometkiwi-da",
+        "1ad785194e391eebc6c53e2d0776cada8f83179a",
+        "checkpoints/model.ckpt",
+        "4f357aa38b0737dcd502f166238c99711ff3419d7b5c8cdf9cde08525a8e7858",
+    ),
+    Artifact(
+        "Unbabel/wmt22-cometkiwi-da",
+        "1ad785194e391eebc6c53e2d0776cada8f83179a",
+        "hparams.yaml",
+        "eee0f391b4e2baee489117e59d967a9be0b1ad027556152c6cefcd41039c778c",
+    ),
+)
+XCOMET_XXL = (
+    Artifact(
+        "Unbabel/XCOMET-XXL",
+        "873bac1b1c461e410c4a6e379f6790d3d1c7c214",
+        "checkpoints/model.ckpt",
+        "e760e1f568af69b7a1bf7aeb46d8f3be21f01be7cbda480f8225ee81eb0af27a",
+    ),
+    Artifact(
+        "Unbabel/XCOMET-XXL",
+        "873bac1b1c461e410c4a6e379f6790d3d1c7c214",
+        "hparams.yaml",
+        "0519fd6b5ad74bb15c87894b2b862e1a005219939ad2e474e63eeff5aa6b2214",
+    ),
+)
 METRICX_24_XL = tuple(
     Artifact("google/metricx-24-hybrid-xl-v2p6", "f6e7f99a655582f28cb998dd3e6ca86b4217430d", filename, sha256)
     for filename, sha256 in (
